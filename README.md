@@ -7,3 +7,7 @@
 ## Base
 
 aspnet core 入门 && 基础
+
+## Razor
+
+Razor页面
