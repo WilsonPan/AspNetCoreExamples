@@ -7,9 +7,9 @@ namespace Razor.Filters
     {
         private readonly ILogger _logger;
 
-        public GlobalPageFilter(ILoggerFactory loggerFactory)
+        public GlobalPageFilter(ILogger logger)
         {
-            _logger = loggerFactory.CreateLogger<GlobalPageFilter>();
+            _logger = logger;
         }
 
         public void OnPageHandlerExecuted(PageHandlerExecutedContext context)
