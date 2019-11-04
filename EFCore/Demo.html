@@ -1,0 +1,95 @@
+<style>
+    <!--
+    .cnblogs_code {
+        width: auto;
+        border-radius: 4px;
+        box-shadow: 3px 2px 7px 0px #bdb7b7;
+    }
+
+    .ws-title {
+        background-color: #28789c;
+        font-size: 25px;
+        font-family: '微软雅黑';
+        padding: 8px 24px;
+        border-radius: 4px;
+        text-align: left;
+        box-shadow: 1px 4px 5px 1px #888888;
+        color: #fff;
+        clear: both;
+
+    }
+
+    .ws-content {
+        margin-left: 20px;
+        margin-top: 12px;
+
+    }
+    -->
+</style>
+<div class="ws-content">
+    <p>&nbsp;这里介绍在ASP.NET Core中使用EF Core，这里数据库选的是Sql Server</p>
+    <ol>
+        <li>如何使用Sql Server</li>
+        <li>添加模型</li>
+        <li>数据库迁移</li>
+        <li>简单CURD</li>
+        <li>复杂查询</li>
+        <li>其他</li>
+    </ol>
+</div>
+<p class="ws-title">如何使用Sql Server</p>
+<div class="ws-content">&nbsp;1. 安装dotnet-ef（已经安装忽略）</div>
+<div class="ws-content">
+    <div class="cnblogs_code">
+        <pre>dotnet tool install --global dotnet-ef</pre>
+    </div>
+    <p>2. 添加包Microsoft.EntityFrameworkCore.Design</p>
+    <div class="cnblogs_code">
+        <pre>dotnet <span style="color: #0000ff;">add</span> package Microsoft.EntityFrameworkCore.Design</pre>
+    </div>
+    <p>3. 添加包Microsoft.EntityFrameworkCore.SqlServer</p>
+    <div class="cnblogs_code">
+        <pre>dotnet <span style="color: #0000ff;">add</span> package Microsoft.EntityFrameworkCore.SqlServer</pre>
+    </div>
+    <p>4. 添加DbContext</p>
+    <div class="cnblogs_code" onclick="cnblogs_code_show('bbce24b9-ed99-4c4c-b9e7-aea681430e87')"><img
+            id="code_img_closed_bbce24b9-ed99-4c4c-b9e7-aea681430e87" class="code_img_closed"
+            src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="" /><img
+            id="code_img_opened_bbce24b9-ed99-4c4c-b9e7-aea681430e87" class="code_img_opened" style="display: none;"
+            onclick="cnblogs_code_hide('bbce24b9-ed99-4c4c-b9e7-aea681430e87',event)"
+            src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif" alt="" />
+        <div id="cnblogs_code_open_bbce24b9-ed99-4c4c-b9e7-aea681430e87" class="cnblogs_code_hide">
+            <pre><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">class</span><span style="color: #000000;"> EFCoreDbContext : DbContext
+    {
+        </span><span style="color: #0000ff;">public</span> EFCoreDbContext(DbContextOptions&lt;EFCoreDbContext&gt;<span style="color: #000000;"> options)
+            : </span><span style="color: #0000ff;">base</span><span style="color: #000000;">(options)
+        {
+    
+        }
+    }</span></pre>
+        </div>
+        <span class="cnblogs_code_collapse">View Code</span>
+    </div>
+    <p>5.在ConfigureServices注入DbContext</p>
+    <div class="cnblogs_code" onclick="cnblogs_code_show('1f319546-972a-471b-867e-dee436ae4ed1')"><img
+            id="code_img_closed_1f319546-972a-471b-867e-dee436ae4ed1" class="code_img_closed"
+            src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="" /><img
+            id="code_img_opened_1f319546-972a-471b-867e-dee436ae4ed1" class="code_img_opened" style="display: none;"
+            onclick="cnblogs_code_hide('1f319546-972a-471b-867e-dee436ae4ed1',event)"
+            src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif" alt="" />
+        <div id="cnblogs_code_open_1f319546-972a-471b-867e-dee436ae4ed1" class="cnblogs_code_hide">
+            <pre><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">void</span><span style="color: #000000;"> ConfigureServices(IServiceCollection services)
+    {
+        services.AddRazorPages();
+    
+        services.AddDbContext</span>&lt;Data.EFCoreDbContext&gt;(options =&gt;<span style="color: #000000;">
+            options.UseSqlServer(Configuration.GetConnectionString(</span><span style="color: #800000;">"</span><span style="color: #800000;">DefaultConnection</span><span style="color: #800000;">"</span><span style="color: #000000;">)));
+    }</span></pre>
+        </div>
+        <span class="cnblogs_code_collapse">View Code</span>
+    </div>
+    <p>经过上面5步，我们就可以在项目中使用数据库，在需要的地方注入DbContext即可</p>
+    <p>&nbsp;</p>
+</div>
+<p class="ws-title">添加模型</p>
+<div class="ws-content">&nbsp;</div>
