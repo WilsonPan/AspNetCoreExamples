@@ -9,7 +9,19 @@ namespace EFCore.Data
         {
 
         }
-        public DbSet<Models.School> Schools { get; set; }
-        public DbSet<Models.Student> Students { get; set; }
+        public DbSet<Models.School> School { get; set; }
+        public DbSet<Models.Student> Student { get; set; }
+
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Models.School>()
+                        .Property(p => p.CreateTime)
+                        .HasDefaultValueSql("getdate()");
+
+            modelBuilder.Entity<Models.Student>()
+                        .Property(p => p.CreateTime)
+                        .HasDefaultValueSql("getdate()");
+        }
     }
 }

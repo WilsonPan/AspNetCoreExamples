@@ -1,95 +1,438 @@
-<style>
-    <!--
+<style><!--
     .cnblogs_code {
-        width: auto;
-        border-radius: 4px;
-        box-shadow: 3px 2px 7px 0px #bdb7b7;
-    }
-
-    .ws-title {
-        background-color: #28789c;
-        font-size: 25px;
-        font-family: '微软雅黑';
-        padding: 8px 24px;
-        border-radius: 4px;
-        text-align: left;
-        box-shadow: 1px 4px 5px 1px #888888;
-        color: #fff;
-        clear: both;
-
-    }
-
-    .ws-content {
-        margin-left: 20px;
-        margin-top: 12px;
-
-    }
-    -->
-</style>
-<div class="ws-content">
+                width: auto;
+                border-radius: 4px;
+                box-shadow: 3px 2px 7px 0px #bdb7b7;
+            }
+        
+            .ws-title {
+                background-color: #28789c;
+                font-size: 25px;
+                font-family: '微软雅黑';
+                padding: 8px 24px;
+                border-radius: 4px;
+                text-align: left;
+                box-shadow: 1px 4px 5px 1px #888888;
+                color: #fff;
+                clear: both;
+        
+            }
+        
+            .ws-content {
+                margin-left: 20px;
+                margin-top: 12px;
+        
+            }
+    --></style>
+    <div class="ws-content">
     <p>&nbsp;这里介绍在ASP.NET Core中使用EF Core，这里数据库选的是Sql Server</p>
     <ol>
-        <li>如何使用Sql Server</li>
-        <li>添加模型</li>
-        <li>数据库迁移</li>
-        <li>简单CURD</li>
-        <li>复杂查询</li>
-        <li>其他</li>
-    </ol>
-</div>
-<p class="ws-title">如何使用Sql Server</p>
-<div class="ws-content">&nbsp;1. 安装dotnet-ef（已经安装忽略）</div>
-<div class="ws-content">
+    <li>如何使用Sql Server</li>
+    <li>添加模型 &amp;&amp; 数据库迁移</li>
+    <li>查询数据</li>
+    <li>保存数据</li>
+    </ol></div>
+    <p class="ws-title">如何使用Sql Server</p>
+    <div class="ws-content">&nbsp;1. 安装dotnet-ef（已经安装忽略）</div>
+    <div class="ws-content">
     <div class="cnblogs_code">
-        <pre>dotnet tool install --global dotnet-ef</pre>
+    <pre>dotnet tool install --global dotnet-ef</pre>
     </div>
     <p>2. 添加包Microsoft.EntityFrameworkCore.Design</p>
     <div class="cnblogs_code">
-        <pre>dotnet <span style="color: #0000ff;">add</span> package Microsoft.EntityFrameworkCore.Design</pre>
+    <pre>dotnet <span style="color: #0000ff;">add</span> package Microsoft.EntityFrameworkCore.Design</pre>
     </div>
     <p>3. 添加包Microsoft.EntityFrameworkCore.SqlServer</p>
     <div class="cnblogs_code">
-        <pre>dotnet <span style="color: #0000ff;">add</span> package Microsoft.EntityFrameworkCore.SqlServer</pre>
+    <pre>dotnet <span style="color: #0000ff;">add</span> package Microsoft.EntityFrameworkCore.SqlServer</pre>
     </div>
     <p>4. 添加DbContext</p>
-    <div class="cnblogs_code" onclick="cnblogs_code_show('bbce24b9-ed99-4c4c-b9e7-aea681430e87')"><img
-            id="code_img_closed_bbce24b9-ed99-4c4c-b9e7-aea681430e87" class="code_img_closed"
-            src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="" /><img
-            id="code_img_opened_bbce24b9-ed99-4c4c-b9e7-aea681430e87" class="code_img_opened" style="display: none;"
-            onclick="cnblogs_code_hide('bbce24b9-ed99-4c4c-b9e7-aea681430e87',event)"
-            src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif" alt="" />
-        <div id="cnblogs_code_open_bbce24b9-ed99-4c4c-b9e7-aea681430e87" class="cnblogs_code_hide">
-            <pre><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">class</span><span style="color: #000000;"> EFCoreDbContext : DbContext
-    {
-        </span><span style="color: #0000ff;">public</span> EFCoreDbContext(DbContextOptions&lt;EFCoreDbContext&gt;<span style="color: #000000;"> options)
-            : </span><span style="color: #0000ff;">base</span><span style="color: #000000;">(options)
-        {
-    
-        }
-    }</span></pre>
-        </div>
-        <span class="cnblogs_code_collapse">View Code</span>
+    <div class="cnblogs_code" onclick="cnblogs_code_show('bbce24b9-ed99-4c4c-b9e7-aea681430e87')"><img id="code_img_closed_bbce24b9-ed99-4c4c-b9e7-aea681430e87" class="code_img_closed" src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="" /><img id="code_img_opened_bbce24b9-ed99-4c4c-b9e7-aea681430e87" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('bbce24b9-ed99-4c4c-b9e7-aea681430e87',event)" src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif" alt="" />
+    <div id="cnblogs_code_open_bbce24b9-ed99-4c4c-b9e7-aea681430e87" class="cnblogs_code_hide">
+    <pre><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">class</span><span style="color: #000000;"> EFCoreDbContext : DbContext
+                        {
+                            </span><span style="color: #0000ff;">public</span> EFCoreDbContext(DbContextOptions&lt;EFCoreDbContext&gt;<span style="color: #000000;"> options)
+                                : </span><span style="color: #0000ff;">base</span><span style="color: #000000;">(options)
+                            {
+                        
+                            }
+                        }</span></pre>
     </div>
+    <span class="cnblogs_code_collapse">View Code</span></div>
     <p>5.在ConfigureServices注入DbContext</p>
-    <div class="cnblogs_code" onclick="cnblogs_code_show('1f319546-972a-471b-867e-dee436ae4ed1')"><img
-            id="code_img_closed_1f319546-972a-471b-867e-dee436ae4ed1" class="code_img_closed"
-            src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="" /><img
-            id="code_img_opened_1f319546-972a-471b-867e-dee436ae4ed1" class="code_img_opened" style="display: none;"
-            onclick="cnblogs_code_hide('1f319546-972a-471b-867e-dee436ae4ed1',event)"
-            src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif" alt="" />
-        <div id="cnblogs_code_open_1f319546-972a-471b-867e-dee436ae4ed1" class="cnblogs_code_hide">
-            <pre><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">void</span><span style="color: #000000;"> ConfigureServices(IServiceCollection services)
-    {
-        services.AddRazorPages();
-    
-        services.AddDbContext</span>&lt;Data.EFCoreDbContext&gt;(options =&gt;<span style="color: #000000;">
-            options.UseSqlServer(Configuration.GetConnectionString(</span><span style="color: #800000;">"</span><span style="color: #800000;">DefaultConnection</span><span style="color: #800000;">"</span><span style="color: #000000;">)));
-    }</span></pre>
-        </div>
-        <span class="cnblogs_code_collapse">View Code</span>
+    <div class="cnblogs_code" onclick="cnblogs_code_show('1f319546-972a-471b-867e-dee436ae4ed1')"><img id="code_img_closed_1f319546-972a-471b-867e-dee436ae4ed1" class="code_img_closed" src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="" /><img id="code_img_opened_1f319546-972a-471b-867e-dee436ae4ed1" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('1f319546-972a-471b-867e-dee436ae4ed1',event)" src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif" alt="" />
+    <div id="cnblogs_code_open_1f319546-972a-471b-867e-dee436ae4ed1" class="cnblogs_code_hide">
+    <pre><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">void</span><span style="color: #000000;"> ConfigureServices(IServiceCollection services)
+                        {
+                            services.AddRazorPages();
+                        
+                            services.AddDbContext</span>&lt;Data.EFCoreDbContext&gt;(options =&gt;<span style="color: #000000;">
+                                options.UseSqlServer(Configuration.GetConnectionString(</span><span style="color: #800000;">"</span><span style="color: #800000;">DefaultConnection</span><span style="color: #800000;">"</span><span style="color: #000000;">)));
+                        }</span></pre>
     </div>
+    <span class="cnblogs_code_collapse">View Code</span></div>
     <p>经过上面5步，我们就可以在项目中使用数据库，在需要的地方注入DbContext即可</p>
     <p>&nbsp;</p>
-</div>
-<p class="ws-title">添加模型</p>
-<div class="ws-content">&nbsp;</div>
+    </div>
+    <p class="ws-title">添加模型</p>
+    <div class="ws-content">&nbsp;我们就以学校 -&gt; 学生这样的模型（一对多）为例，字段也尽量简洁，这里不是展示设计，以展示操作EF Core为主，所以类定义未必是最合适的。</div>
+    <div class="ws-content">学校类</div>
+    <div class="ws-content">
+    <div class="cnblogs_code" onclick="cnblogs_code_show('ac4ecd9b-72d0-4eb8-8183-99eefb926b1a')"><img id="code_img_closed_ac4ecd9b-72d0-4eb8-8183-99eefb926b1a" class="code_img_closed" src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="" /><img id="code_img_opened_ac4ecd9b-72d0-4eb8-8183-99eefb926b1a" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('ac4ecd9b-72d0-4eb8-8183-99eefb926b1a',event)" src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif" alt="" />
+    <div id="cnblogs_code_open_ac4ecd9b-72d0-4eb8-8183-99eefb926b1a" class="cnblogs_code_hide">
+    <pre>[Table(<span style="color: #800000;">"</span><span style="color: #800000;">School</span><span style="color: #800000;">"</span><span style="color: #000000;">)]
+                    </span><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">class</span><span style="color: #000000;"> School
+                    {
+                        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+                        </span><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">int</span> Id { <span style="color: #0000ff;">get</span>; <span style="color: #0000ff;">set</span><span style="color: #000000;">; }
+                    
+                        [Display(Name </span>= <span style="color: #800000;">"</span><span style="color: #800000;">学校名称</span><span style="color: #800000;">"</span><span style="color: #000000;">)]
+                        [Required(ErrorMessage </span>= <span style="color: #800000;">"</span><span style="color: #800000;">学校名称不能为空</span><span style="color: #800000;">"</span><span style="color: #000000;">)]
+                        [StringLength(</span><span style="color: #800080;">100</span>, ErrorMessage = <span style="color: #800000;">"</span><span style="color: #800000;">学校名称最大长度为100</span><span style="color: #800000;">"</span><span style="color: #000000;">)]
+                        </span><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">string</span> Name { <span style="color: #0000ff;">get</span>; <span style="color: #0000ff;">set</span><span style="color: #000000;">; }
+                    
+                        [Display(Name </span>= <span style="color: #800000;">"</span><span style="color: #800000;">学校地址</span><span style="color: #800000;">"</span><span style="color: #000000;">)]
+                        [Required(ErrorMessage </span>= <span style="color: #800000;">"</span><span style="color: #800000;">学校地址不能为空</span><span style="color: #800000;">"</span><span style="color: #000000;">)]
+                        [StringLength(</span><span style="color: #800080;">200</span>, ErrorMessage = <span style="color: #800000;">"</span><span style="color: #800000;">学校地址最大长度为200</span><span style="color: #800000;">"</span><span style="color: #000000;">)]
+                        </span><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">string</span> Address { <span style="color: #0000ff;">get</span>; <span style="color: #0000ff;">set</span><span style="color: #000000;">; }
+                    
+                        </span><span style="color: #0000ff;">public</span> List&lt;Student&gt; Students { <span style="color: #0000ff;">get</span>; <span style="color: #0000ff;">set</span><span style="color: #000000;">; }
+                    
+                        [Display(Name </span>= <span style="color: #800000;">"</span><span style="color: #800000;">创建时间</span><span style="color: #800000;">"</span><span style="color: #000000;">)]
+                        [DataType(DataType.DateTime), DisplayFormat(DataFormatString </span>= <span style="color: #800000;">"</span><span style="color: #800000;">{0:yyyy-MM-dd HH:mm:ss}</span><span style="color: #800000;">"</span><span style="color: #000000;">)]
+                        </span><span style="color: #0000ff;">public</span> DateTime CreateTime { <span style="color: #0000ff;">get</span>; <span style="color: #0000ff;">set</span><span style="color: #000000;">; }
+                    
+                        [Display(Name </span>= <span style="color: #800000;">"</span><span style="color: #800000;">最后更新时间</span><span style="color: #800000;">"</span><span style="color: #000000;">)]
+                        [DataType(DataType.DateTime), DisplayFormat(DataFormatString </span>= <span style="color: #800000;">"</span><span style="color: #800000;">{0:yyyy-MM-dd HH:mm:ss}</span><span style="color: #800000;">"</span><span style="color: #000000;">)]
+                        </span><span style="color: #0000ff;">public</span> DateTime? LastUpdateTime { <span style="color: #0000ff;">get</span>; <span style="color: #0000ff;">set</span><span style="color: #000000;">; }
+                    
+                    }</span></pre>
+    </div>
+    <span class="cnblogs_code_collapse">View Code</span></div>
+    <p>&nbsp;学生类</p>
+    <div class="cnblogs_code" onclick="cnblogs_code_show('efdce98a-2a84-4ea5-bd07-0a131d8d090b')"><img id="code_img_closed_efdce98a-2a84-4ea5-bd07-0a131d8d090b" class="code_img_closed" src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="" /><img id="code_img_opened_efdce98a-2a84-4ea5-bd07-0a131d8d090b" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('efdce98a-2a84-4ea5-bd07-0a131d8d090b',event)" src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif" alt="" />
+    <div id="cnblogs_code_open_efdce98a-2a84-4ea5-bd07-0a131d8d090b" class="cnblogs_code_hide">
+    <pre><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">class</span><span style="color: #000000;"> Student
+                    {
+                        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+                        </span><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">int</span> Id { <span style="color: #0000ff;">get</span>; <span style="color: #0000ff;">set</span><span style="color: #000000;">; }
+                    
+                        [Display(Name </span>= <span style="color: #800000;">"</span><span style="color: #800000;">学生姓名</span><span style="color: #800000;">"</span><span style="color: #000000;">)]
+                        [Required(ErrorMessage </span>= <span style="color: #800000;">"</span><span style="color: #800000;">学生姓名不能为空</span><span style="color: #800000;">"</span><span style="color: #000000;">)]
+                        [StringLength(</span><span style="color: #800080;">50</span>, ErrorMessage = <span style="color: #800000;">"</span><span style="color: #800000;">学生姓名最大长度为50</span><span style="color: #800000;">"</span><span style="color: #000000;">)]
+                        </span><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">string</span> Name { <span style="color: #0000ff;">get</span>; <span style="color: #0000ff;">set</span><span style="color: #000000;">; }
+                    
+                        [Display(Name </span>= <span style="color: #800000;">"</span><span style="color: #800000;">年龄</span><span style="color: #800000;">"</span><span style="color: #000000;">)]
+                        [Required(ErrorMessage </span>= <span style="color: #800000;">"</span><span style="color: #800000;">年龄不能为空</span><span style="color: #800000;">"</span><span style="color: #000000;">)]
+                        [Range(minimum: </span><span style="color: #800080;">10</span>, maximum: <span style="color: #800080;">100</span>, ErrorMessage = <span style="color: #800000;">"</span><span style="color: #800000;">学生年龄必须在（10 ~ 100）之间</span><span style="color: #800000;">"</span><span style="color: #000000;">)]
+                        </span><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">int</span> Age { <span style="color: #0000ff;">get</span>; <span style="color: #0000ff;">set</span><span style="color: #000000;">; }
+                    
+                        </span><span style="color: #0000ff;">public</span> School School { <span style="color: #0000ff;">get</span>; <span style="color: #0000ff;">set</span><span style="color: #000000;">; }
+                    
+                        [Display(Name </span>= <span style="color: #800000;">"</span><span style="color: #800000;">创建时间</span><span style="color: #800000;">"</span><span style="color: #000000;">)]
+                        [DataType(DataType.DateTime), DisplayFormat(DataFormatString </span>= <span style="color: #800000;">"</span><span style="color: #800000;">{0:yyyy-MM-dd HH:mm:ss}</span><span style="color: #800000;">"</span><span style="color: #000000;">)]
+                        </span><span style="color: #0000ff;">public</span> DateTime CreateTime { <span style="color: #0000ff;">get</span>; <span style="color: #0000ff;">set</span><span style="color: #000000;">; }
+                    
+                        [Display(Name </span>= <span style="color: #800000;">"</span><span style="color: #800000;">最后更新时间</span><span style="color: #800000;">"</span><span style="color: #000000;">)]
+                        [DataType(DataType.DateTime), DisplayFormat(DataFormatString </span>= <span style="color: #800000;">"</span><span style="color: #800000;">{0:yyyy-MM-dd HH:mm:ss}</span><span style="color: #800000;">"</span><span style="color: #000000;">)]
+                        </span><span style="color: #0000ff;">public</span> DateTime? LastUpdateTime { <span style="color: #0000ff;">get</span>; <span style="color: #0000ff;">set</span><span style="color: #000000;">; }
+                    }</span></pre>
+    </div>
+    <span class="cnblogs_code_collapse">View Code</span></div>
+    <p>&nbsp;配置默认值</p>
+    <div class="cnblogs_code" onclick="cnblogs_code_show('f7ba6418-5764-4f53-aad8-74ca32f186ca')"><img id="code_img_closed_f7ba6418-5764-4f53-aad8-74ca32f186ca" class="code_img_closed" src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="" /><img id="code_img_opened_f7ba6418-5764-4f53-aad8-74ca32f186ca" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('f7ba6418-5764-4f53-aad8-74ca32f186ca',event)" src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif" alt="" />
+    <div id="cnblogs_code_open_f7ba6418-5764-4f53-aad8-74ca32f186ca" class="cnblogs_code_hide">
+    <pre><span style="color: #0000ff;">protected</span> <span style="color: #0000ff;">override</span> <span style="color: #0000ff;">void</span><span style="color: #000000;"> OnModelCreating(ModelBuilder modelBuilder)
+                    {
+                        modelBuilder.Entity</span>&lt;Models.School&gt;<span style="color: #000000;">()
+                                    .Property(p </span>=&gt;<span style="color: #000000;"> p.CreateTime)
+                                    .HasDefaultValueSql(</span><span style="color: #800000;">"</span><span style="color: #800000;">getdate()</span><span style="color: #800000;">"</span><span style="color: #000000;">);
+                    
+                        modelBuilder.Entity</span>&lt;Models.Student&gt;<span style="color: #000000;">()
+                                    .Property(p </span>=&gt;<span style="color: #000000;"> p.CreateTime)
+                                    .HasDefaultValueSql(</span><span style="color: #800000;">"</span><span style="color: #800000;">getdate()</span><span style="color: #800000;">"</span><span style="color: #000000;">);
+                    }</span></pre>
+    </div>
+    <span class="cnblogs_code_collapse">View Code</span></div>
+    <p>&nbsp;</p>
+    <p>模型定义好之后，我们需要把模型添加到DbContext</p>
+    </div>
+    <div class="ws-content">
+    <div class="cnblogs_code">
+    <pre><span style="color: #0000ff;">public</span> DbSet&lt;Models.School&gt; Schools{ <span style="color: #0000ff;">get</span>; <span style="color: #0000ff;">set</span><span style="color: #000000;">; }
+                    </span><span style="color: #0000ff;">public</span> DbSet&lt;Models.Student&gt; Students { <span style="color: #0000ff;">get</span>; <span style="color: #0000ff;">set</span>; }</pre>
+    </div>
+    </div>
+    <div class="ws-content">然后需要更新模型到数据库，执行下面两条命令</div>
+    <div class="ws-content">1. 新增一个迁移</div>
+    <div class="ws-content">
+    <div class="cnblogs_code">
+    <pre>dotnet ef migrations <span style="color: #0000ff;">add</span> DatabaseInit</pre>
+    </div>
+    <p>&nbsp;2. 更新到数据库</p>
+    <div class="cnblogs_code">
+    <pre>dotnet ef migrations add DatabaseInit</pre>
+    </div>
+    <p>查看数据库，我们可以看到下面关系图</p>
+    <p>&nbsp;<img src="https://img2018.cnblogs.com/blog/413875/201911/413875-20191104202313683-177292588.png" alt="" /></p>
+    <p>在Student表里面多了一个SchoolId，这个我们是没有定义，是EF Core生成的阴影属性，当然我们也可以显示定义这个字段</p>
+    <p>实体类定义我们用到数据注释和Fluent API约束实体类生成，下面列取经常用到的</p>
+    <table style="height: 98px; width: 776px;" border="0" align="left">
+    <tbody>
+    <tr><th>注释</th><th>用途</th></tr>
+    <tr>
+    <td>&nbsp;Key</td>
+    <td>&nbsp;主键</td>
+    </tr>
+    <tr>
+    <td>&nbsp;Required</td>
+    <td>&nbsp;必须</td>
+    </tr>
+    <tr>
+    <td>&nbsp;MaxLength&nbsp;</td>
+    <td>&nbsp;最大长度</td>
+    </tr>
+    <tr>
+    <td>NotMapped</td>
+    <td>不映射到数据库</td>
+    </tr>
+    <tr>
+    <td>ConcurrencyCheck</td>
+    <td>并发检查</td>
+    </tr>
+    <tr>
+    <td>
+    <div>Timestamp</div>
+    </td>
+    <td>时间戳字段</td>
+    </tr>
+    </tbody>
+    </table>
+    <div style="clear: both;">&nbsp;</div>
+    <p>&nbsp;</p>
+    </div>
+    <p class="ws-title">查询数据</p>
+    <div class="ws-content">一、联接查询</div>
+    <div class="ws-content">
+    <div class="cnblogs_code" onclick="cnblogs_code_show('352b3557-e2cb-4802-8c89-f62b9d584366')"><img id="code_img_closed_352b3557-e2cb-4802-8c89-f62b9d584366" class="code_img_closed" src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="" /><img id="code_img_opened_352b3557-e2cb-4802-8c89-f62b9d584366" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('352b3557-e2cb-4802-8c89-f62b9d584366',event)" src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif" alt="" />
+    <div id="cnblogs_code_open_352b3557-e2cb-4802-8c89-f62b9d584366" class="cnblogs_code_hide">
+    <pre><span style="color: #0000ff;">var</span> query = <span style="color: #0000ff;">from</span> a <span style="color: #0000ff;">in</span><span style="color: #000000;"> _context.School
+                        join b </span><span style="color: #0000ff;">in</span><span style="color: #000000;"> _context.Student on a.Id equals b.School.Id
+                        </span><span style="color: #0000ff;">select</span> <span style="color: #0000ff;">new</span><span style="color: #000000;">
+                        {
+                            SchoolName </span>=<span style="color: #000000;"> a.Name,
+                            StudentName </span>=<span style="color: #000000;"> b.Name
+                        };</span></pre>
+    </div>
+    <span class="cnblogs_code_collapse">View Code</span></div>
+    <p>&nbsp;对应生成的Sql</p>
+    <div class="cnblogs_code">
+    <pre><span style="color: #0000ff;">SELECT</span> <span style="color: #ff0000;">[</span><span style="color: #ff0000;">s</span><span style="color: #ff0000;">]</span>.<span style="color: #ff0000;">[</span><span style="color: #ff0000;">Name</span><span style="color: #ff0000;">]</span> <span style="color: #0000ff;">AS</span> <span style="color: #ff0000;">[</span><span style="color: #ff0000;">SchoolName</span><span style="color: #ff0000;">]</span>, <span style="color: #ff0000;">[</span><span style="color: #ff0000;">t</span><span style="color: #ff0000;">]</span>.<span style="color: #ff0000;">[</span><span style="color: #ff0000;">Name</span><span style="color: #ff0000;">]</span> <span style="color: #0000ff;">AS</span> <span style="color: #ff0000;">[</span><span style="color: #ff0000;">StudentName</span><span style="color: #ff0000;">]</span>
+                  <span style="color: #0000ff;">FROM</span> <span style="color: #ff0000;">[</span><span style="color: #ff0000;">School</span><span style="color: #ff0000;">]</span> <span style="color: #0000ff;">AS</span> <span style="color: #ff0000;">[</span><span style="color: #ff0000;">s</span><span style="color: #ff0000;">]</span>
+                  <span style="color: #0000ff;">INNER</span> <span style="color: #808080;">JOIN</span><span style="color: #000000;"> (
+                      </span><span style="color: #0000ff;">SELECT</span> <span style="color: #ff0000;">[</span><span style="color: #ff0000;">s0</span><span style="color: #ff0000;">]</span>.<span style="color: #ff0000;">[</span><span style="color: #ff0000;">Id</span><span style="color: #ff0000;">]</span>, <span style="color: #ff0000;">[</span><span style="color: #ff0000;">s0</span><span style="color: #ff0000;">]</span>.<span style="color: #ff0000;">[</span><span style="color: #ff0000;">Age</span><span style="color: #ff0000;">]</span>, <span style="color: #ff0000;">[</span><span style="color: #ff0000;">s0</span><span style="color: #ff0000;">]</span>.<span style="color: #ff0000;">[</span><span style="color: #ff0000;">CreateTime</span><span style="color: #ff0000;">]</span>, <span style="color: #ff0000;">[</span><span style="color: #ff0000;">s0</span><span style="color: #ff0000;">]</span>.<span style="color: #ff0000;">[</span><span style="color: #ff0000;">LastUpdateTime</span><span style="color: #ff0000;">]</span>, <span style="color: #ff0000;">[</span><span style="color: #ff0000;">s0</span><span style="color: #ff0000;">]</span>.<span style="color: #ff0000;">[</span><span style="color: #ff0000;">Name</span><span style="color: #ff0000;">]</span>, <span style="color: #ff0000;">[</span><span style="color: #ff0000;">s0</span><span style="color: #ff0000;">]</span>.<span style="color: #ff0000;">[</span><span style="color: #ff0000;">SchoolId</span><span style="color: #ff0000;">]</span>, <span style="color: #ff0000;">[</span><span style="color: #ff0000;">s1</span><span style="color: #ff0000;">]</span>.<span style="color: #ff0000;">[</span><span style="color: #ff0000;">Id</span><span style="color: #ff0000;">]</span> <span style="color: #0000ff;">AS</span> <span style="color: #ff0000;">[</span><span style="color: #ff0000;">Id0</span><span style="color: #ff0000;">]</span>, <span style="color: #ff0000;">[</span><span style="color: #ff0000;">s1</span><span style="color: #ff0000;">]</span>.<span style="color: #ff0000;">[</span><span style="color: #ff0000;">Address</span><span style="color: #ff0000;">]</span>, <span style="color: #ff0000;">[</span><span style="color: #ff0000;">s1</span><span style="color: #ff0000;">]</span>.<span style="color: #ff0000;">[</span><span style="color: #ff0000;">CreateTime</span><span style="color: #ff0000;">]</span> <span style="color: #0000ff;">AS</span> <span style="color: #ff0000;">[</span><span style="color: #ff0000;">CreateTime0</span><span style="color: #ff0000;">]</span>, <span style="color: #ff0000;">[</span><span style="color: #ff0000;">s1</span><span style="color: #ff0000;">]</span>.<span style="color: #ff0000;">[</span><span style="color: #ff0000;">LastUpdateTime</span><span style="color: #ff0000;">]</span> <span style="color: #0000ff;">AS</span> <span style="color: #ff0000;">[</span><span style="color: #ff0000;">LastUpdateTime0</span><span style="color: #ff0000;">]</span>, <span style="color: #ff0000;">[</span><span style="color: #ff0000;">s1</span><span style="color: #ff0000;">]</span>.<span style="color: #ff0000;">[</span><span style="color: #ff0000;">Name</span><span style="color: #ff0000;">]</span> <span style="color: #0000ff;">AS</span> <span style="color: #ff0000;">[</span><span style="color: #ff0000;">Name0</span><span style="color: #ff0000;">]</span>
+                      <span style="color: #0000ff;">FROM</span> <span style="color: #ff0000;">[</span><span style="color: #ff0000;">Student</span><span style="color: #ff0000;">]</span> <span style="color: #0000ff;">AS</span> <span style="color: #ff0000;">[</span><span style="color: #ff0000;">s0</span><span style="color: #ff0000;">]</span>
+                      <span style="color: #808080;">LEFT</span> <span style="color: #808080;">JOIN</span> <span style="color: #ff0000;">[</span><span style="color: #ff0000;">School</span><span style="color: #ff0000;">]</span> <span style="color: #0000ff;">AS</span> <span style="color: #ff0000;">[</span><span style="color: #ff0000;">s1</span><span style="color: #ff0000;">]</span> <span style="color: #0000ff;">ON</span> <span style="color: #ff0000;">[</span><span style="color: #ff0000;">s0</span><span style="color: #ff0000;">]</span>.<span style="color: #ff0000;">[</span><span style="color: #ff0000;">SchoolId</span><span style="color: #ff0000;">]</span> <span style="color: #808080;">=</span> <span style="color: #ff0000;">[</span><span style="color: #ff0000;">s1</span><span style="color: #ff0000;">]</span>.<span style="color: #ff0000;">[</span><span style="color: #ff0000;">Id</span><span style="color: #ff0000;">]</span><span style="color: #000000;">
+                  ) </span><span style="color: #0000ff;">AS</span> <span style="color: #ff0000;">[</span><span style="color: #ff0000;">t</span><span style="color: #ff0000;">]</span> <span style="color: #0000ff;">ON</span> <span style="color: #ff0000;">[</span><span style="color: #ff0000;">s</span><span style="color: #ff0000;">]</span>.<span style="color: #ff0000;">[</span><span style="color: #ff0000;">Id</span><span style="color: #ff0000;">]</span> <span style="color: #808080;">=</span> <span style="color: #ff0000;">[</span><span style="color: #ff0000;">t</span><span style="color: #ff0000;">]</span>.<span style="color: #ff0000;">[</span><span style="color: #ff0000;">Id0</span><span style="color: #ff0000;">]</span></pre>
+    </div>
+    <p>和我们预期有点不一致，预期是两个表的全连接，为什么出现这个，原因是Student里面的导航属性School，Linq遇到导航属性是通过连表得到，为了验证这个，我们不使用阴影属性，显示加上SchoolId试试</p>
+    <div class="cnblogs_code" onclick="cnblogs_code_show('f5a57b60-a4fc-4f2b-99df-08d329aa8d58')"><img id="code_img_closed_f5a57b60-a4fc-4f2b-99df-08d329aa8d58" class="code_img_closed" src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="" /><img id="code_img_opened_f5a57b60-a4fc-4f2b-99df-08d329aa8d58" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('f5a57b60-a4fc-4f2b-99df-08d329aa8d58',event)" src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif" alt="" />
+    <div id="cnblogs_code_open_f5a57b60-a4fc-4f2b-99df-08d329aa8d58" class="cnblogs_code_hide">
+    <pre><span style="color: #0000ff;">var</span> query = <span style="color: #0000ff;">from</span> a <span style="color: #0000ff;">in</span><span style="color: #000000;"> _context.School
+                        join b </span><span style="color: #0000ff;">in</span><span style="color: #000000;"> _context.Student on a.Id equals b.SchoolId
+                        </span><span style="color: #0000ff;">select</span> <span style="color: #0000ff;">new</span><span style="color: #000000;">
+                        {
+                            SchoolName </span>=<span style="color: #000000;"> a.Name,
+                            StudentName </span>=<span style="color: #000000;"> b.Name
+                        };</span></pre>
+    </div>
+    <span class="cnblogs_code_collapse">View Code</span></div>
+    <p>对应生成的Sql</p>
+    <div class="cnblogs_code">
+    <pre><span style="color: #0000ff;">SELECT</span> <span style="color: #ff0000;">[</span><span style="color: #ff0000;">s</span><span style="color: #ff0000;">]</span>.<span style="color: #ff0000;">[</span><span style="color: #ff0000;">Name</span><span style="color: #ff0000;">]</span> <span style="color: #0000ff;">AS</span> <span style="color: #ff0000;">[</span><span style="color: #ff0000;">SchoolName</span><span style="color: #ff0000;">]</span>, <span style="color: #ff0000;">[</span><span style="color: #ff0000;">s0</span><span style="color: #ff0000;">]</span>.<span style="color: #ff0000;">[</span><span style="color: #ff0000;">Name</span><span style="color: #ff0000;">]</span> <span style="color: #0000ff;">AS</span> <span style="color: #ff0000;">[</span><span style="color: #ff0000;">StudentName</span><span style="color: #ff0000;">]</span>
+            <span style="color: #0000ff;">FROM</span> <span style="color: #ff0000;">[</span><span style="color: #ff0000;">School</span><span style="color: #ff0000;">]</span> <span style="color: #0000ff;">AS</span> <span style="color: #ff0000;">[</span><span style="color: #ff0000;">s</span><span style="color: #ff0000;">]</span>
+            <span style="color: #0000ff;">INNER</span> <span style="color: #808080;">JOIN</span> <span style="color: #ff0000;">[</span><span style="color: #ff0000;">Student</span><span style="color: #ff0000;">]</span> <span style="color: #0000ff;">AS</span> <span style="color: #ff0000;">[</span><span style="color: #ff0000;">s0</span><span style="color: #ff0000;">]</span> <span style="color: #0000ff;">ON</span> <span style="color: #ff0000;">[</span><span style="color: #ff0000;">s</span><span style="color: #ff0000;">]</span>.<span style="color: #ff0000;">[</span><span style="color: #ff0000;">Id</span><span style="color: #ff0000;">]</span> <span style="color: #808080;">=</span> <span style="color: #ff0000;">[</span><span style="color: #ff0000;">s0</span><span style="color: #ff0000;">]</span>.<span style="color: #ff0000;">[</span><span style="color: #ff0000;">SchoolId</span><span style="color: #ff0000;">]</span></pre>
+    </div>
+    <p>这次生成的Sql就很简洁，跟预期一样，所以如果使用联接查询，最好是避免使用阴影属性</p>
+    <p>两个Sql的执行计划</p>
+    <div style="display: inline;">
+    <div style="display: inline; text-align: left; margin-right: 50px;"><img src="https://img2018.cnblogs.com/blog/413875/201911/413875-20191105092311052-2082741578.png" alt="" /></div>
+    </div>
+    <div style="display: inline; border-right: 1px solid #808080;">
+    <div style="display: inline; text-align: right;"><img src="https://img2018.cnblogs.com/blog/413875/201911/413875-20191105092245385-1494592867.png" alt="" /></div>
+    </div>
+    <p>&nbsp;二、GroupBy查询</p>
+    <div class="cnblogs_code" onclick="cnblogs_code_show('64462476-3039-4a51-84d6-b0e0eddf9301')"><img id="code_img_closed_64462476-3039-4a51-84d6-b0e0eddf9301" class="code_img_closed" src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="" /><img id="code_img_opened_64462476-3039-4a51-84d6-b0e0eddf9301" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('64462476-3039-4a51-84d6-b0e0eddf9301',event)" src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif" alt="" />
+    <div id="cnblogs_code_open_64462476-3039-4a51-84d6-b0e0eddf9301" class="cnblogs_code_hide">
+    <pre><span style="color: #0000ff;">var</span> query = <span style="color: #0000ff;">from</span> a <span style="color: #0000ff;">in</span><span style="color: #000000;"> _context.School
+                    join b </span><span style="color: #0000ff;">in</span><span style="color: #000000;"> _context.Student on a.Id equals b.SchoolId
+                    group a by a.Name into t
+                    </span><span style="color: #0000ff;">where</span> t.Count() &gt; <span style="color: #800080;">0</span>
+                    <span style="color: #0000ff;">orderby</span><span style="color: #000000;"> t.Key
+                    </span><span style="color: #0000ff;">select</span> <span style="color: #0000ff;">new</span><span style="color: #000000;">
+                    {
+                        t.Key,
+                        Count </span>=<span style="color: #000000;"> t.Count(),
+                    };</span></pre>
+    </div>
+    <span class="cnblogs_code_collapse">View Code</span></div>
+    <p>对应生成的Sql</p>
+    <div class="cnblogs_code">
+    <pre><span style="color: #0000ff;">SELECT</span> <span style="color: #ff0000;">[</span><span style="color: #ff0000;">s</span><span style="color: #ff0000;">]</span>.<span style="color: #ff0000;">[</span><span style="color: #ff0000;">Name</span><span style="color: #ff0000;">]</span> <span style="color: #0000ff;">AS</span> <span style="color: #ff0000;">[</span><span style="color: #ff0000;">Key</span><span style="color: #ff0000;">]</span>, <span style="color: #ff00ff;">COUNT</span>(<span style="color: #808080;">*</span>) <span style="color: #0000ff;">AS</span> <span style="color: #ff0000;">[</span><span style="color: #ff0000;">Count</span><span style="color: #ff0000;">]</span>
+        <span style="color: #0000ff;">FROM</span> <span style="color: #ff0000;">[</span><span style="color: #ff0000;">School</span><span style="color: #ff0000;">]</span> <span style="color: #0000ff;">AS</span> <span style="color: #ff0000;">[</span><span style="color: #ff0000;">s</span><span style="color: #ff0000;">]</span>
+        <span style="color: #0000ff;">INNER</span> <span style="color: #808080;">JOIN</span> <span style="color: #ff0000;">[</span><span style="color: #ff0000;">Student</span><span style="color: #ff0000;">]</span> <span style="color: #0000ff;">AS</span> <span style="color: #ff0000;">[</span><span style="color: #ff0000;">s0</span><span style="color: #ff0000;">]</span> <span style="color: #0000ff;">ON</span> <span style="color: #ff0000;">[</span><span style="color: #ff0000;">s</span><span style="color: #ff0000;">]</span>.<span style="color: #ff0000;">[</span><span style="color: #ff0000;">Id</span><span style="color: #ff0000;">]</span> <span style="color: #808080;">=</span> <span style="color: #ff0000;">[</span><span style="color: #ff0000;">s0</span><span style="color: #ff0000;">]</span>.<span style="color: #ff0000;">[</span><span style="color: #ff0000;">SchoolId</span><span style="color: #ff0000;">]</span>
+        <span style="color: #0000ff;">GROUP</span> <span style="color: #0000ff;">BY</span> <span style="color: #ff0000;">[</span><span style="color: #ff0000;">s</span><span style="color: #ff0000;">]</span>.<span style="color: #ff0000;">[</span><span style="color: #ff0000;">Name</span><span style="color: #ff0000;">]</span>
+        <span style="color: #0000ff;">HAVING</span> <span style="color: #ff00ff;">COUNT</span>(<span style="color: #808080;">*</span>) <span style="color: #808080;">&gt;</span> <span style="color: #800000; font-weight: bold;">0</span>
+        <span style="color: #0000ff;">ORDER</span> <span style="color: #0000ff;">BY</span> <span style="color: #ff0000;">[</span><span style="color: #ff0000;">s</span><span style="color: #ff0000;">]</span>.<span style="color: #ff0000;">[</span><span style="color: #ff0000;">Name</span><span style="color: #ff0000;">]</span></pre>
+    </div>
+    <p>EF Core 支持的聚合运算符如下所示</p>
+    <ul>
+    <li>平均值</li>
+    <li>计数</li>
+    <li>LongCount</li>
+    <li>最大值</li>
+    <li>最小值</li>
+    <li>Sum</li>
+    </ul>
+    <p>&nbsp;三、左连接</p>
+    <div class="cnblogs_code" onclick="cnblogs_code_show('c5b4ff67-28b8-46e6-9f67-b734935504ee')"><img id="code_img_closed_c5b4ff67-28b8-46e6-9f67-b734935504ee" class="code_img_closed" src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="" /><img id="code_img_opened_c5b4ff67-28b8-46e6-9f67-b734935504ee" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('c5b4ff67-28b8-46e6-9f67-b734935504ee',event)" src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif" alt="" />
+    <div id="cnblogs_code_open_c5b4ff67-28b8-46e6-9f67-b734935504ee" class="cnblogs_code_hide">
+    <pre><span style="color: #0000ff;">var</span> query = <span style="color: #0000ff;">from</span> a <span style="color: #0000ff;">in</span><span style="color: #000000;"> _context.School
+                    join b </span><span style="color: #0000ff;">in</span><span style="color: #000000;"> _context.Student on a.Id equals b.SchoolId into t1
+                    </span><span style="color: #0000ff;">from</span> t <span style="color: #0000ff;">in</span><span style="color: #000000;"> t1.DefaultIfEmpty()
+                    </span><span style="color: #0000ff;">select</span> <span style="color: #0000ff;">new</span><span style="color: #000000;">
+                    {
+                        SchoolName </span>=<span style="color: #000000;"> a.Name,
+                        StudentName </span>=<span style="color: #000000;"> t.Name
+                    };
+        
+        </span><span style="color: #0000ff;">var</span> list = query.AsNoTracking().ToList();</pre>
+    </div>
+    <span class="cnblogs_code_collapse">View Code</span></div>
+    <p>对应生成的Sql</p>
+    <div class="cnblogs_code">
+    <pre><span style="color: #0000ff;">SELECT</span> <span style="color: #ff0000;">[</span><span style="color: #ff0000;">s</span><span style="color: #ff0000;">]</span>.<span style="color: #ff0000;">[</span><span style="color: #ff0000;">Name</span><span style="color: #ff0000;">]</span> <span style="color: #0000ff;">AS</span> <span style="color: #ff0000;">[</span><span style="color: #ff0000;">SchoolName</span><span style="color: #ff0000;">]</span>, <span style="color: #ff0000;">[</span><span style="color: #ff0000;">s0</span><span style="color: #ff0000;">]</span>.<span style="color: #ff0000;">[</span><span style="color: #ff0000;">Name</span><span style="color: #ff0000;">]</span> <span style="color: #0000ff;">AS</span> <span style="color: #ff0000;">[</span><span style="color: #ff0000;">StudentName</span><span style="color: #ff0000;">]</span>
+        <span style="color: #0000ff;">FROM</span> <span style="color: #ff0000;">[</span><span style="color: #ff0000;">School</span><span style="color: #ff0000;">]</span> <span style="color: #0000ff;">AS</span> <span style="color: #ff0000;">[</span><span style="color: #ff0000;">s</span><span style="color: #ff0000;">]</span>
+        <span style="color: #808080;">LEFT</span> <span style="color: #808080;">JOIN</span> <span style="color: #ff0000;">[</span><span style="color: #ff0000;">Student</span><span style="color: #ff0000;">]</span> <span style="color: #0000ff;">AS</span> <span style="color: #ff0000;">[</span><span style="color: #ff0000;">s0</span><span style="color: #ff0000;">]</span> <span style="color: #0000ff;">ON</span> <span style="color: #ff0000;">[</span><span style="color: #ff0000;">s</span><span style="color: #ff0000;">]</span>.<span style="color: #ff0000;">[</span><span style="color: #ff0000;">Id</span><span style="color: #ff0000;">]</span> <span style="color: #808080;">=</span> <span style="color: #ff0000;">[</span><span style="color: #ff0000;">s0</span><span style="color: #ff0000;">]</span>.<span style="color: #ff0000;">[</span><span style="color: #ff0000;">SchoolId</span><span style="color: #ff0000;">]</span></pre>
+    </div>
+    <p>四、小结</p>
+    <p>全联接时避免使用导航属性连表</p>
+    <p>默认情况是跟踪查询，这表示可以更改这些实体实例，然后通过 SaveChanges() 持久化这些更改，</p>
+    <p>如果只需要读取，不需要修改可以指定非跟踪查询AsNoTracking</p>
+    <p>非跟踪查询可以在每个查询后面指定，还可以在上下文实例级别更改默认跟踪行为</p>
+    <div class="cnblogs_code">
+    <pre>context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;</pre>
+    </div>
+    <p>&nbsp;</p>
+    </div>
+    <p class="ws-title">保存数据</p>
+    <div class="ws-content">一、关联数据</div>
+    <div class="ws-content">
+    <div class="cnblogs_code" onclick="cnblogs_code_show('1a52992a-9f1e-402c-9a47-d8e56491a84a')"><img id="code_img_closed_1a52992a-9f1e-402c-9a47-d8e56491a84a" class="code_img_closed" src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="" /><img id="code_img_opened_1a52992a-9f1e-402c-9a47-d8e56491a84a" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('1a52992a-9f1e-402c-9a47-d8e56491a84a',event)" src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif" alt="" />
+    <div id="cnblogs_code_open_1a52992a-9f1e-402c-9a47-d8e56491a84a" class="cnblogs_code_hide">
+    <pre>_context.School.Add(<span style="color: #0000ff;">new</span><span style="color: #000000;"> Models.School
+            {
+                Name </span>= <span style="color: #800000;">"</span><span style="color: #800000;">暨南大学</span><span style="color: #800000;">"</span><span style="color: #000000;">,
+                Address </span>= <span style="color: #800000;">"</span><span style="color: #800000;">广州市黄埔大道西601号</span><span style="color: #800000;">"</span><span style="color: #000000;">,
+                Students </span>= <span style="color: #0000ff;">new</span> System.Collections.Generic.List&lt;Models.Student&gt;<span style="color: #000000;">()
+                {
+                    </span><span style="color: #0000ff;">new</span><span style="color: #000000;"> Models.Student
+                    {
+                        Name</span>= <span style="color: #800000;">"</span><span style="color: #800000;">黄伟</span><span style="color: #800000;">"</span><span style="color: #000000;">,
+                        Age </span>= <span style="color: #800080;">21</span><span style="color: #000000;">,
+                    },
+                },
+            });
+    
+    _context.SaveChanges();</span></pre>
+    </div>
+    <span class="cnblogs_code_collapse">View Code</span></div>
+    <p>&nbsp;同时在School，Student表保存数据，自动维护Student表的SchoolId字段数据</p>
+    <p>&nbsp;</p>
+    <p>二、级联删除</p>
+    <div class="cnblogs_code" onclick="cnblogs_code_show('bb574568-3fe8-4961-af43-2cf5dc3ce499')"><img id="code_img_closed_bb574568-3fe8-4961-af43-2cf5dc3ce499" class="code_img_closed" src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="" /><img id="code_img_opened_bb574568-3fe8-4961-af43-2cf5dc3ce499" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('bb574568-3fe8-4961-af43-2cf5dc3ce499',event)" src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif" alt="" />
+    <div id="cnblogs_code_open_bb574568-3fe8-4961-af43-2cf5dc3ce499" class="cnblogs_code_hide">
+    <pre><span style="color: #0000ff;">var</span> school = _context.School.Include(m =&gt; m.Students).FirstOrDefault(m =&gt; m.Name == <span style="color: #800000;">"</span><span style="color: #800000;">济南大学</span><span style="color: #800000;">"</span><span style="color: #000000;">);
+    
+    _context.School.Remove(school);
+    
+    _context.SaveChanges();</span></pre>
+    </div>
+    <span class="cnblogs_code_collapse">View Code</span></div>
+    <p>&nbsp;</p>
+    </div>
+    <div class="ws-content">对应生成的Sql</div>
+    <div class="ws-content">
+    <div class="cnblogs_code" onclick="cnblogs_code_show('69f2a4ee-2079-4025-9c9a-b8b5b9f13dbe')"><img id="code_img_closed_69f2a4ee-2079-4025-9c9a-b8b5b9f13dbe" class="code_img_closed" src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="" /><img id="code_img_opened_69f2a4ee-2079-4025-9c9a-b8b5b9f13dbe" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('69f2a4ee-2079-4025-9c9a-b8b5b9f13dbe',event)" src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif" alt="" />
+    <div id="cnblogs_code_open_69f2a4ee-2079-4025-9c9a-b8b5b9f13dbe" class="cnblogs_code_hide">
+    <pre><span style="color: #008080;">--</span><span style="color: #008080;">1. 读取济南大学和他所有学生</span>
+    <span style="color: #0000ff;">SELECT</span> <span style="color: #ff0000;">[</span><span style="color: #ff0000;">t</span><span style="color: #ff0000;">]</span>.<span style="color: #ff0000;">[</span><span style="color: #ff0000;">Id</span><span style="color: #ff0000;">]</span>, <span style="color: #ff0000;">[</span><span style="color: #ff0000;">t</span><span style="color: #ff0000;">]</span>.<span style="color: #ff0000;">[</span><span style="color: #ff0000;">Address</span><span style="color: #ff0000;">]</span>, <span style="color: #ff0000;">[</span><span style="color: #ff0000;">t</span><span style="color: #ff0000;">]</span>.<span style="color: #ff0000;">[</span><span style="color: #ff0000;">CreateTime</span><span style="color: #ff0000;">]</span>, <span style="color: #ff0000;">[</span><span style="color: #ff0000;">t</span><span style="color: #ff0000;">]</span>.<span style="color: #ff0000;">[</span><span style="color: #ff0000;">LastUpdateTime</span><span style="color: #ff0000;">]</span>, <span style="color: #ff0000;">[</span><span style="color: #ff0000;">t</span><span style="color: #ff0000;">]</span>.<span style="color: #ff0000;">[</span><span style="color: #ff0000;">Name</span><span style="color: #ff0000;">]</span>, <span style="color: #ff0000;">[</span><span style="color: #ff0000;">s0</span><span style="color: #ff0000;">]</span>.<span style="color: #ff0000;">[</span><span style="color: #ff0000;">Id</span><span style="color: #ff0000;">]</span>, <span style="color: #ff0000;">[</span><span style="color: #ff0000;">s0</span><span style="color: #ff0000;">]</span>.<span style="color: #ff0000;">[</span><span style="color: #ff0000;">Age</span><span style="color: #ff0000;">]</span>, <span style="color: #ff0000;">[</span><span style="color: #ff0000;">s0</span><span style="color: #ff0000;">]</span>.<span style="color: #ff0000;">[</span><span style="color: #ff0000;">CreateTime</span><span style="color: #ff0000;">]</span>, <span style="color: #ff0000;">[</span><span style="color: #ff0000;">s0</span><span style="color: #ff0000;">]</span>.<span style="color: #ff0000;">[</span><span style="color: #ff0000;">LastUpdateTime</span><span style="color: #ff0000;">]</span>, <span style="color: #ff0000;">[</span><span style="color: #ff0000;">s0</span><span style="color: #ff0000;">]</span>.<span style="color: #ff0000;">[</span><span style="color: #ff0000;">Name</span><span style="color: #ff0000;">]</span>, <span style="color: #ff0000;">[</span><span style="color: #ff0000;">s0</span><span style="color: #ff0000;">]</span>.<span style="color: #ff0000;">[</span><span style="color: #ff0000;">SchoolId</span><span style="color: #ff0000;">]</span>
+    <span style="color: #0000ff;">FROM</span><span style="color: #000000;"> (
+        </span><span style="color: #0000ff;">SELECT</span> <span style="color: #0000ff;">TOP</span>(<span style="color: #800000; font-weight: bold;">1</span>) <span style="color: #ff0000;">[</span><span style="color: #ff0000;">s</span><span style="color: #ff0000;">]</span>.<span style="color: #ff0000;">[</span><span style="color: #ff0000;">Id</span><span style="color: #ff0000;">]</span>, <span style="color: #ff0000;">[</span><span style="color: #ff0000;">s</span><span style="color: #ff0000;">]</span>.<span style="color: #ff0000;">[</span><span style="color: #ff0000;">Address</span><span style="color: #ff0000;">]</span>, <span style="color: #ff0000;">[</span><span style="color: #ff0000;">s</span><span style="color: #ff0000;">]</span>.<span style="color: #ff0000;">[</span><span style="color: #ff0000;">CreateTime</span><span style="color: #ff0000;">]</span>, <span style="color: #ff0000;">[</span><span style="color: #ff0000;">s</span><span style="color: #ff0000;">]</span>.<span style="color: #ff0000;">[</span><span style="color: #ff0000;">LastUpdateTime</span><span style="color: #ff0000;">]</span>, <span style="color: #ff0000;">[</span><span style="color: #ff0000;">s</span><span style="color: #ff0000;">]</span>.<span style="color: #ff0000;">[</span><span style="color: #ff0000;">Name</span><span style="color: #ff0000;">]</span>
+        <span style="color: #0000ff;">FROM</span> <span style="color: #ff0000;">[</span><span style="color: #ff0000;">School</span><span style="color: #ff0000;">]</span> <span style="color: #0000ff;">AS</span> <span style="color: #ff0000;">[</span><span style="color: #ff0000;">s</span><span style="color: #ff0000;">]</span>
+        <span style="color: #0000ff;">WHERE</span> <span style="color: #ff0000;">[</span><span style="color: #ff0000;">s</span><span style="color: #ff0000;">]</span>.<span style="color: #ff0000;">[</span><span style="color: #ff0000;">Name</span><span style="color: #ff0000;">]</span> <span style="color: #808080;">=</span> N<span style="color: #ff0000;">'</span><span style="color: #ff0000;">济南大学</span><span style="color: #ff0000;">'</span><span style="color: #000000;">
+    ) </span><span style="color: #0000ff;">AS</span> <span style="color: #ff0000;">[</span><span style="color: #ff0000;">t</span><span style="color: #ff0000;">]</span>
+    <span style="color: #808080;">LEFT</span> <span style="color: #808080;">JOIN</span> <span style="color: #ff0000;">[</span><span style="color: #ff0000;">Student</span><span style="color: #ff0000;">]</span> <span style="color: #0000ff;">AS</span> <span style="color: #ff0000;">[</span><span style="color: #ff0000;">s0</span><span style="color: #ff0000;">]</span> <span style="color: #0000ff;">ON</span> <span style="color: #ff0000;">[</span><span style="color: #ff0000;">t</span><span style="color: #ff0000;">]</span>.<span style="color: #ff0000;">[</span><span style="color: #ff0000;">Id</span><span style="color: #ff0000;">]</span> <span style="color: #808080;">=</span> <span style="color: #ff0000;">[</span><span style="color: #ff0000;">s0</span><span style="color: #ff0000;">]</span>.<span style="color: #ff0000;">[</span><span style="color: #ff0000;">SchoolId</span><span style="color: #ff0000;">]</span>
+    <span style="color: #0000ff;">ORDER</span> <span style="color: #0000ff;">BY</span> <span style="color: #ff0000;">[</span><span style="color: #ff0000;">t</span><span style="color: #ff0000;">]</span>.<span style="color: #ff0000;">[</span><span style="color: #ff0000;">Id</span><span style="color: #ff0000;">]</span>, <span style="color: #ff0000;">[</span><span style="color: #ff0000;">s0</span><span style="color: #ff0000;">]</span>.<span style="color: #ff0000;">[</span><span style="color: #ff0000;">Id</span><span style="color: #ff0000;">]</span>
+    
+    <span style="color: #008080;">--</span><span style="color: #008080;">2. 循环每个学生删除</span>
+    <span style="color: #0000ff;">SET</span> NOCOUNT <span style="color: #0000ff;">ON</span><span style="color: #000000;">;
+    </span><span style="color: #0000ff;">DELETE</span> <span style="color: #0000ff;">FROM</span> <span style="color: #ff0000;">[</span><span style="color: #ff0000;">Student</span><span style="color: #ff0000;">]</span>
+    <span style="color: #0000ff;">WHERE</span> <span style="color: #ff0000;">[</span><span style="color: #ff0000;">Id</span><span style="color: #ff0000;">]</span> <span style="color: #808080;">=</span> <span style="color: #008000;">@p0</span><span style="color: #000000;">;
+    </span><span style="color: #0000ff;">SELECT</span> <span style="color: #008000; font-weight: bold;">@@ROWCOUNT</span><span style="color: #000000;">;
+    </span><span style="color: #0000ff;">SET</span> NOCOUNT <span style="color: #0000ff;">ON</span><span style="color: #000000;">;
+    </span><span style="color: #0000ff;">DELETE</span> <span style="color: #0000ff;">FROM</span> <span style="color: #ff0000;">[</span><span style="color: #ff0000;">Student</span><span style="color: #ff0000;">]</span>
+    <span style="color: #0000ff;">WHERE</span> <span style="color: #ff0000;">[</span><span style="color: #ff0000;">Id</span><span style="color: #ff0000;">]</span> <span style="color: #808080;">=</span> <span style="color: #008000;">@p0</span><span style="color: #000000;">;
+    </span><span style="color: #0000ff;">SELECT</span> <span style="color: #008000; font-weight: bold;">@@ROWCOUNT</span><span style="color: #000000;">;
+    </span><span style="color: #0000ff;">SET</span> NOCOUNT <span style="color: #0000ff;">ON</span><span style="color: #000000;">;
+    </span><span style="color: #0000ff;">DELETE</span> <span style="color: #0000ff;">FROM</span> <span style="color: #ff0000;">[</span><span style="color: #ff0000;">Student</span><span style="color: #ff0000;">]</span>
+    <span style="color: #0000ff;">WHERE</span> <span style="color: #ff0000;">[</span><span style="color: #ff0000;">Id</span><span style="color: #ff0000;">]</span> <span style="color: #808080;">=</span> <span style="color: #008000;">@p0</span><span style="color: #000000;">;
+    </span><span style="color: #0000ff;">SELECT</span> <span style="color: #008000; font-weight: bold;">@@ROWCOUNT</span><span style="color: #000000;">;
+    
+    </span><span style="color: #008080;">--</span><span style="color: #008080;">3. 删除学校</span>
+    <span style="color: #0000ff;">SET</span> NOCOUNT <span style="color: #0000ff;">ON</span><span style="color: #000000;">;
+    </span><span style="color: #0000ff;">DELETE</span> <span style="color: #0000ff;">FROM</span> <span style="color: #ff0000;">[</span><span style="color: #ff0000;">School</span><span style="color: #ff0000;">]</span>
+    <span style="color: #0000ff;">WHERE</span> <span style="color: #ff0000;">[</span><span style="color: #ff0000;">Id</span><span style="color: #ff0000;">]</span> <span style="color: #808080;">=</span> <span style="color: #008000;">@p1</span><span style="color: #000000;">;
+    </span><span style="color: #0000ff;">SELECT</span> <span style="color: #008000; font-weight: bold;">@@ROWCOUNT</span>;</pre>
+    </div>
+    <span class="cnblogs_code_collapse">View Code</span></div>
+    <p>级联删除要用Include把子项也包含到实体</p>
+    <p>&nbsp;</p>
+    <p>三、使用事务</p>
+    <p>默认情况下，如果数据库提供程序支持事务，则会在事务中应用对 SaveChanges() 的单一调用中的所有更改。 如果其中有任何更改失败，则会回滚事务且所有更改都不会应用到数据库。 这意味着，SaveChanges() 可保证完全成功，或在出现错误时不修改数据库。</p>
+    <p>对于大多数应用程序，此默认行为已足够。 如果应用程序要求被视为有必要，则应该仅手动控制事务<span style="font-family: 'PingFang SC', 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 14px;">中间调用多次SaveChanges()也不会直接保存到数据库，最后</span><span style="font-family: 'PingFang SC', 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 14px;">transaction.Commit()</span></p>
+    </div>
+    <div class="ws-content">
+    <div class="cnblogs_code" onclick="cnblogs_code_show('c6d80aa5-cf3c-4b0d-b00d-1cdb7d1f9782')"><img id="code_img_closed_c6d80aa5-cf3c-4b0d-b00d-1cdb7d1f9782" class="code_img_closed" src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="" /><img id="code_img_opened_c6d80aa5-cf3c-4b0d-b00d-1cdb7d1f9782" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('c6d80aa5-cf3c-4b0d-b00d-1cdb7d1f9782',event)" src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif" alt="" />
+    <div id="cnblogs_code_open_c6d80aa5-cf3c-4b0d-b00d-1cdb7d1f9782" class="cnblogs_code_hide">
+    <pre><span style="color: #0000ff;">using</span> (<span style="color: #0000ff;">var</span> transaction =<span style="color: #000000;"> _context.Database.BeginTransaction())
+    {
+        </span><span style="color: #0000ff;">var</span> school = _context.School.Add(<span style="color: #0000ff;">new</span><span style="color: #000000;"> Models.School
+        {
+            Name </span>= <span style="color: #800000;">"</span><span style="color: #800000;">济南大学</span><span style="color: #800000;">"</span><span style="color: #000000;">,
+            Address </span>= <span style="color: #800000;">"</span><span style="color: #800000;">山东省济南市南辛庄西路336号</span><span style="color: #800000;">"</span><span style="color: #000000;">,
+        });
+        _context.SaveChanges();
+    
+        System.Threading.Thread.Sleep(</span><span style="color: #800080;">2000</span>);  <span style="color: #008000;">//</span><span style="color: #008000;">for testing</span>
+        _context.Student.Add(<span style="color: #0000ff;">new</span><span style="color: #000000;"> Models.Student
+        {
+            Name </span>= <span style="color: #800000;">"</span><span style="color: #800000;">张三</span><span style="color: #800000;">"</span><span style="color: #000000;">,
+            Age </span>= <span style="color: #800080;">29</span><span style="color: #000000;">,
+            School </span>=<span style="color: #000000;"> school.Entity
+        });
+        _context.SaveChanges();
+    
+        transaction.Commit();
+    }</span></pre>
+    </div>
+    <span class="cnblogs_code_collapse">View Code</span></div>
+    <p>&nbsp;下面是Sql Server Profiler</p>
+    </div>
+    <div class="ws-content">&nbsp;<img src="https://img2018.cnblogs.com/blog/413875/201911/413875-20191105111046898-1335540303.png" alt="" />
+    <p>&nbsp;</p>
+    <p>注意两次RPC:Completed时间，每次调用SaveChanges提交到数据库执行，外面包一层事务，所以事务里面要尽可能的控制操作最少，时间最少</p>
+    <p>&nbsp;</p>
+    <p>四、处理并发冲突</p>
+    <p>&nbsp;</p>
+    </div>

@@ -29,5 +29,8 @@ namespace EFCore.Models
         [Display(Name = "最后更新时间")]
         [DataType(DataType.DateTime), DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}")]
         public DateTime? LastUpdateTime { get; set; }
+
+        [Timestamp]
+        public byte[] RowVersion { get; set; }
     }
 }

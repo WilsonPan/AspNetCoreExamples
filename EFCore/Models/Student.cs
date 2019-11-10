@@ -13,11 +13,14 @@ namespace EFCore.Models
         [Required(ErrorMessage = "学生姓名不能为空")]
         [StringLength(50, ErrorMessage = "学生姓名最大长度为50")]
         public string Name { get; set; }
-
+        
         [Display(Name = "年龄")]
         [Required(ErrorMessage = "年龄不能为空")]
         [Range(minimum: 10, maximum: 100, ErrorMessage = "学生年龄必须在（10 ~ 100）之间")]
+        [ConcurrencyCheck]
         public int Age { get; set; }
+
+        public int SchoolId { get; set; }
 
         public School School { get; set; }
 
