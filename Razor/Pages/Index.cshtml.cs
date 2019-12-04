@@ -20,20 +20,20 @@ namespace Razor.Pages
             _dbContext = dbContext;
         }
         //在选择处理程序方法后但在模型绑定发生前调用
-public override void OnPageHandlerSelected(Microsoft.AspNetCore.Mvc.Filters.PageHandlerSelectedContext context)
-{
-    _logger.LogDebug("OnPageHandlerSelected");
-}
-//在执行处理器方法前，模型绑定完成后调用
-public override void OnPageHandlerExecuting(Microsoft.AspNetCore.Mvc.Filters.PageHandlerExecutingContext context)
-{
-    _logger.LogDebug("OnPageHandlerExecuting");
-}
-//在执行处理器方法后，生成操作结果前调用
-public override void OnPageHandlerExecuted(Microsoft.AspNetCore.Mvc.Filters.PageHandlerExecutedContext context)
-{
-    _logger.LogDebug("OnPageHandlerExecuted");
-}
+        public override void OnPageHandlerSelected(Microsoft.AspNetCore.Mvc.Filters.PageHandlerSelectedContext context)
+        {
+            _logger.LogDebug("OnPageHandlerSelected");
+        }
+        //在执行处理器方法前，模型绑定完成后调用
+        public override void OnPageHandlerExecuting(Microsoft.AspNetCore.Mvc.Filters.PageHandlerExecutingContext context)
+        {
+            _logger.LogDebug("OnPageHandlerExecuting");
+        }
+        //在执行处理器方法后，生成操作结果前调用
+        public override void OnPageHandlerExecuted(Microsoft.AspNetCore.Mvc.Filters.PageHandlerExecutedContext context)
+        {
+            _logger.LogDebug("OnPageHandlerExecuted");
+        }
 
         public List<Models.Book> Books { get; set; }
 

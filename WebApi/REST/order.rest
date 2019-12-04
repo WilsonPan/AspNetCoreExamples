@@ -1,0 +1,92 @@
+
+@baseUrl = https://localhost:5001
+
+###
+GET {{baseUrl}}/Order HTTP/1.1
+
+### 
+# @name order
+POST {{baseUrl}}/Order HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+
+{
+	"OrderNo": "637109312996909246",
+	"Quantity": 2,
+	"Amount": 38.28
+}
+
+### 
+
+@orderId = {{order.response.body.*}}
+GET {{baseUrl}}/Order/{{orderId}}.json HTTP/1.1
+
+### 
+GET {{baseUrl}}/Order/{{orderId}}.xml HTTP/1.1
+###
+GET {{baseUrl}}/Order/{{orderId}} HTTP/1.1
+###
+
+PUT {{baseUrl}}/Order HTTP/1.1
+Content-Type: application/json
+Accept: application/json
+
+{
+	"Id": 12,
+	"OrderNo": "2019112235759329",
+	"Quantity": 2,
+	"Amount": 38.28
+}
+
+###
+
+GET {{baseUrl}}/Order/11
+
+###
+
+PATCH  {{baseUrl}}/Order/637109312996909246 HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+
+[
+  {
+    "op": "test",
+    "path": "/quantity",
+    "value": "2"
+  },
+  {
+    "op": "test",
+    "path": "/amount",
+    "value": "36.8"
+  },
+  {
+    "op": "add",
+    "path": "/isComplete",
+    "value": "true"
+  },
+]
+
+
+
+
+Sample request:
+
+PATCH  /Order/{orderNo} 
+
+[
+  {
+    "op": "test",
+    "path": "/quantity",
+    "value": "2"
+  },
+  {
+    "op": "test",
+    "path": "/amount",
+    "value": "38.28"
+  },
+  {
+    "op": "add",
+    "path": "/isComplete",
+    "value": "true"
+  },
+]

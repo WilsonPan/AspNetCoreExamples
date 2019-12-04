@@ -1,0 +1,620 @@
+<div class="ws-content">
+        <p>&nbsp;这里介绍在ASP.NET Core中使用Web API创建 RESTful 服务，本文使用VSCode + NET Core3.0</p>
+        <ol>
+        <li><a href="#base">创建简单Rest API</a></li>
+        <li><a href="#format">格式化输出</a></li>
+        <li><a href="#patch">JSON Patch请求</a></li>
+        <li><a href="#swagger">Open API（Swagger）集成</a></li>
+        </ol></div>
+        <p id="base" class="ws-title">创建简单Rest API</p>
+        <div class="ws-content">
+        <p>在终端输入</p>
+        <div class="cnblogs_code">
+        <pre>dotnet <span style="color: #0000ff;">new</span> webapi -n WebAPI</pre>
+        </div>
+        <p>1. 创建Order模型，然后初始化数据</p>
+        <div class="cnblogs_code" onclick="cnblogs_code_show('e307bae0-e6c1-43c8-99f8-d629c8474e14')"><img id="code_img_closed_e307bae0-e6c1-43c8-99f8-d629c8474e14" class="code_img_closed" src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="" /><img id="code_img_opened_e307bae0-e6c1-43c8-99f8-d629c8474e14" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('e307bae0-e6c1-43c8-99f8-d629c8474e14',event)" src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif" alt="" />
+        <div id="cnblogs_code_open_e307bae0-e6c1-43c8-99f8-d629c8474e14" class="cnblogs_code_hide">
+        <pre><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">class</span><span style="color: #000000;"> OrderStore
+                        {
+                            </span><span style="color: #0000ff;">public</span> List&lt;Order&gt; Orders { <span style="color: #0000ff;">get</span>; } = <span style="color: #0000ff;">new</span> List&lt;Order&gt;<span style="color: #000000;">();
+                        
+                            </span><span style="color: #0000ff;">public</span><span style="color: #000000;"> OrderStore()
+                            {
+                                </span><span style="color: #0000ff;">var</span> random = <span style="color: #0000ff;">new</span><span style="color: #000000;"> Random();
+                                </span><span style="color: #0000ff;">foreach</span> (<span style="color: #0000ff;">var</span> item <span style="color: #0000ff;">in</span> Enumerable.Range(<span style="color: #800080;">1</span>, <span style="color: #800080;">10</span><span style="color: #000000;">))
+                                {
+                                    Orders.Add(</span><span style="color: #0000ff;">new</span><span style="color: #000000;"> Order
+                                    {
+                                        Id </span>=<span style="color: #000000;"> item,
+                                        OrderNo </span>= DateTime.Now.AddSeconds(random.Next(<span style="color: #800080;">100</span>, <span style="color: #800080;">200</span>)).AddMilliseconds(random.Next(<span style="color: #800080;">20</span>, <span style="color: #800080;">50</span><span style="color: #000000;">)).Ticks.ToString(),
+                                        Quantity </span>= random.Next(<span style="color: #800080;">1</span>, <span style="color: #800080;">10</span><span style="color: #000000;">),
+                                        Amount </span>= Math.Round(((<span style="color: #0000ff;">decimal</span>)random.Next(<span style="color: #800080;">100</span>, <span style="color: #800080;">500</span>) / random.Next(<span style="color: #800080;">2</span>, <span style="color: #800080;">6</span>)), <span style="color: #800080;">2</span><span style="color: #000000;">)
+                                    });
+                                }
+                            }
+                        }</span></pre>
+        </div>
+        <span class="cnblogs_code_collapse">View Code</span></div>
+        <p>2. 简单REST API接口</p>
+        <div class="cnblogs_code" onclick="cnblogs_code_show('43ac37c5-4e2a-4f41-a62b-71c03fc45d78')"><img id="code_img_closed_43ac37c5-4e2a-4f41-a62b-71c03fc45d78" class="code_img_closed" src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="" /><img id="code_img_opened_43ac37c5-4e2a-4f41-a62b-71c03fc45d78" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('43ac37c5-4e2a-4f41-a62b-71c03fc45d78',event)" src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif" alt="" />
+        <div id="cnblogs_code_open_43ac37c5-4e2a-4f41-a62b-71c03fc45d78" class="cnblogs_code_hide">
+        <pre><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span>
+                        <span style="color: #808080;">///</span><span style="color: #008000;"> 订单模块
+                        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span>
+                        <span style="color: #000000;">[ApiController]
+                        [Route(</span><span style="color: #800000;">"</span><span style="color: #800000;">[controller]</span><span style="color: #800000;">"</span><span style="color: #000000;">)]
+                        [FormatFilter]
+                        </span><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">class</span><span style="color: #000000;"> OrderController : ControllerBase
+                        {
+                        
+                            </span><span style="color: #0000ff;">readonly</span> Models.OrderStore _orderStore = <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+                            </span><span style="color: #0000ff;">public</span><span style="color: #000000;"> OrderController(Models.OrderStore orderStore)
+                            {
+                                _orderStore </span>=<span style="color: #000000;"> orderStore;
+                            }
+                        
+                            </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span>
+                            <span style="color: #808080;">///</span><span style="color: #008000;"> 查询所有订单
+                            </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span>
+                        <span style="color: #000000;">    [HttpGet]
+                            </span><span style="color: #0000ff;">public</span> ActionResult&lt;List&lt;Models.Order&gt;&gt; GetAll() =&gt;<span style="color: #000000;"> _orderStore.Orders;
+                        
+                            </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span>
+                            <span style="color: #808080;">///</span><span style="color: #008000;"> 获取订单    
+                            </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span>
+                            <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;param name="id"&gt;&lt;/param&gt;</span>
+                            <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;returns&gt;&lt;/returns&gt;</span>
+                            [HttpGet(<span style="color: #800000;">"</span><span style="color: #800000;">{id:int}.{format?}</span><span style="color: #800000;">"</span><span style="color: #000000;">)]
+                            </span><span style="color: #0000ff;">public</span> ActionResult&lt;Models.Order&gt; GetById(<span style="color: #0000ff;">int</span><span style="color: #000000;"> id)
+                            {
+                                </span><span style="color: #0000ff;">var</span> order = _orderStore.Orders.FirstOrDefault(m =&gt; m.Id ==<span style="color: #000000;"> id);
+                        
+                                </span><span style="color: #0000ff;">if</span> (order == <span style="color: #0000ff;">null</span><span style="color: #000000;">)
+                                {
+                                    </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> NotFound();
+                                }
+                        
+                                </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> order;
+                            }
+                        
+                            </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span>
+                            <span style="color: #808080;">///</span><span style="color: #008000;"> 创建订单
+                            </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span>
+                            <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;param name="order"&gt;&lt;/param&gt;</span>
+                            <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;returns&gt;</span><span style="color: #008000;">成功返回订单Id，失败返回-1</span><span style="color: #808080;">&lt;/returns&gt;</span>
+                        <span style="color: #000000;">    [HttpPost]
+                            </span><span style="color: #0000ff;">public</span> ActionResult&lt;<span style="color: #0000ff;">int</span>&gt;<span style="color: #000000;"> Create(Models.Order order)
+                            {
+                                </span><span style="color: #0000ff;">if</span> (_orderStore.Orders.Any(m =&gt; m.OrderNo ==<span style="color: #000000;"> order.OrderNo))
+                                {
+                                    </span><span style="color: #0000ff;">return</span> -<span style="color: #800080;">1</span><span style="color: #000000;">;
+                                }
+                        
+                                order.Id </span>= _orderStore.Orders.Max(m =&gt; m.Id) + <span style="color: #800080;">1</span><span style="color: #000000;">;
+                                _orderStore.Orders.Add(order);
+                        
+                                </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> order.Id;
+                            }
+                        
+                            </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span>
+                            <span style="color: #808080;">///</span><span style="color: #008000;"> 更新订单
+                            </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span>
+                            <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;returns&gt;&lt;/returns&gt;</span>
+                        <span style="color: #000000;">    [HttpPut]
+                            </span><span style="color: #0000ff;">public</span> ActionResult&lt;<span style="color: #0000ff;">bool</span>&gt;<span style="color: #000000;"> Update(Models.Order model)
+                            {
+                                Console.WriteLine($</span><span style="color: #800000;">"</span><span style="color: #800000;">OrderNo:{model.OrderNo}</span><span style="color: #800000;">"</span><span style="color: #000000;">);
+                                </span><span style="color: #0000ff;">var</span> order = _orderStore.Orders.FirstOrDefault(m =&gt; m.OrderNo ==<span style="color: #000000;"> model.OrderNo);
+                        
+                                </span><span style="color: #0000ff;">if</span> (order == <span style="color: #0000ff;">null</span><span style="color: #000000;">)
+                                {
+                                    </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> NotFound();
+                                }
+                        
+                                order.Amount </span>=<span style="color: #000000;"> model.Amount;
+                                order.Quantity </span>=<span style="color: #000000;"> model.Quantity;
+                        
+                                </span><span style="color: #0000ff;">return</span> <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+                            }
+                        
+                            </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span>
+                            <span style="color: #808080;">///</span><span style="color: #008000;"> 更新订单指定信息
+                            </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span>
+                            <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;remarks&gt;</span>
+                            <span style="color: #808080;">///</span><span style="color: #008000;"> Sample request:
+                            </span><span style="color: #808080;">///</span> 
+                            <span style="color: #808080;">///</span><span style="color: #008000;">     PATCH  /Order/{orderNo} 
+                            </span><span style="color: #808080;">///</span><span style="color: #008000;">     [
+                            </span><span style="color: #808080;">///</span><span style="color: #008000;">         {
+                            </span><span style="color: #808080;">///</span><span style="color: #008000;">             "op": "test",
+                            </span><span style="color: #808080;">///</span><span style="color: #008000;">             "path": "/quantity",
+                            </span><span style="color: #808080;">///</span><span style="color: #008000;">             "value": "2"
+                            </span><span style="color: #808080;">///</span><span style="color: #008000;">         },
+                            </span><span style="color: #808080;">///</span><span style="color: #008000;">         {
+                            </span><span style="color: #808080;">///</span><span style="color: #008000;">             "op": "test",
+                            </span><span style="color: #808080;">///</span><span style="color: #008000;">             "path": "/amount",
+                            </span><span style="color: #808080;">///</span><span style="color: #008000;">             "value": "38.28"
+                            </span><span style="color: #808080;">///</span><span style="color: #008000;">         },
+                            </span><span style="color: #808080;">///</span><span style="color: #008000;">         {
+                            </span><span style="color: #808080;">///</span><span style="color: #008000;">             "op": "add",
+                            </span><span style="color: #808080;">///</span><span style="color: #008000;">             "path": "/isComplete",
+                            </span><span style="color: #808080;">///</span><span style="color: #008000;">             "value": "true"
+                            </span><span style="color: #808080;">///</span><span style="color: #008000;">         },
+                            </span><span style="color: #808080;">///</span><span style="color: #008000;">     ]
+                            </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/remarks&gt;</span>
+                            <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;returns&gt;</span><span style="color: #008000;">返回是否成功</span><span style="color: #808080;">&lt;/returns&gt;</span>
+                            <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;response code="200"&gt;</span><span style="color: #008000;">提交成功</span><span style="color: #808080;">&lt;/response&gt;</span>
+                            <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;response code="400"&gt;</span><span style="color: #008000;">提交参数异常</span><span style="color: #808080;">&lt;/response&gt;</span>    
+                            <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;response code="404"&gt;</span><span style="color: #008000;">订单号不存在</span><span style="color: #808080;">&lt;/response&gt;</span>
+                            [HttpPatch(<span style="color: #800000;">"</span><span style="color: #800000;">{orderNo:length(18)}</span><span style="color: #800000;">"</span><span style="color: #000000;">)]
+                            [ProducesResponseType(StatusCodes.Status200OK)]
+                            [ProducesResponseType(StatusCodes.Status404NotFound)]
+                            [ProducesResponseType(StatusCodes.Status400BadRequest)]
+                            </span><span style="color: #0000ff;">public</span> ActionResult&lt;<span style="color: #0000ff;">bool</span>&gt; Update([FromBody] JsonPatchDocument&lt;Models.Order&gt; patchDoc, [FromRoute] <span style="color: #0000ff;">string</span><span style="color: #000000;"> orderNo)
+                            {
+                                </span><span style="color: #0000ff;">var</span> order = _orderStore.Orders.FirstOrDefault(m =&gt; m.OrderNo ==<span style="color: #000000;"> orderNo);
+                        
+                                </span><span style="color: #0000ff;">if</span> (order == <span style="color: #0000ff;">null</span><span style="color: #000000;">)
+                                {
+                                    </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> NotFound();
+                                }
+                        
+                                patchDoc.ApplyTo(order, ModelState);
+                        
+                                </span><span style="color: #0000ff;">if</span> (!<span style="color: #000000;">ModelState.IsValid)
+                                {
+                                    </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> BadRequest(ModelState);
+                                }
+                        
+                                </span><span style="color: #0000ff;">return</span> Ok(<span style="color: #0000ff;">true</span><span style="color: #000000;">);
+                            }
+                        }</span></pre>
+        </div>
+        <span class="cnblogs_code_collapse">View Code</span></div>
+        <p>3. 推荐一个VS Code插件（REST Client）测试接口，<a href="https://marketplace.visualstudio.com/items?itemName=humao.rest-client" target="_blank">官方介绍</a></p>
+        <div class="cnblogs_code" onclick="cnblogs_code_show('a487e883-2949-4b9b-9840-726e7c09f0bf')"><img id="code_img_closed_a487e883-2949-4b9b-9840-726e7c09f0bf" class="code_img_closed" src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="" /><img id="code_img_opened_a487e883-2949-4b9b-9840-726e7c09f0bf" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('a487e883-2949-4b9b-9840-726e7c09f0bf',event)" src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif" alt="" />
+        <div id="cnblogs_code_open_a487e883-2949-4b9b-9840-726e7c09f0bf" class="cnblogs_code_hide">
+        <pre>@baseUrl = https:<span style="color: #008000;">//</span><span style="color: #008000;">localhost:5001</span>
+                        <span style="color: #000000;">
+                        ###
+                        GET {{baseUrl}}</span>/Order HTTP/<span style="color: #800080;">1.1</span><span style="color: #000000;">
+                        
+                        ### 
+                        # @name order
+                        POST {{baseUrl}}</span>/Order HTTP/<span style="color: #800080;">1.1</span><span style="color: #000000;">
+                        Accept: application</span>/<span style="color: #000000;">json
+                        Content</span>-Type: application/<span style="color: #000000;">json
+                        
+                        {
+                            </span><span style="color: #800000;">"</span><span style="color: #800000;">OrderNo</span><span style="color: #800000;">"</span>: <span style="color: #800000;">"</span><span style="color: #800000;">637109312996909246</span><span style="color: #800000;">"</span><span style="color: #000000;">,
+                            </span><span style="color: #800000;">"</span><span style="color: #800000;">Quantity</span><span style="color: #800000;">"</span>: <span style="color: #800080;">2</span><span style="color: #000000;">,
+                            </span><span style="color: #800000;">"</span><span style="color: #800000;">Amount</span><span style="color: #800000;">"</span>: <span style="color: #800080;">38.28</span><span style="color: #000000;">
+                        }
+                        
+                        ### 
+                        
+                        @orderId </span>= {{order.response.body.*<span style="color: #000000;">}}
+                        GET {{baseUrl}}</span>/Order/{{orderId}}.json HTTP/<span style="color: #800080;">1.1</span><span style="color: #000000;">
+                        
+                        ### 
+                        GET {{baseUrl}}</span>/Order/{{orderId}}.xml HTTP/<span style="color: #800080;">1.1</span><span style="color: #000000;">
+                        ###
+                        GET {{baseUrl}}</span>/Order/{{orderId}} HTTP/<span style="color: #800080;">1.1</span><span style="color: #000000;">
+                        ###
+                        
+                        PUT {{baseUrl}}</span>/Order HTTP/<span style="color: #800080;">1.1</span><span style="color: #000000;">
+                        Content</span>-Type: application/<span style="color: #000000;">json
+                        Accept: application</span>/<span style="color: #000000;">json
+                        
+                        {
+                            </span><span style="color: #800000;">"</span><span style="color: #800000;">Id</span><span style="color: #800000;">"</span>: <span style="color: #800080;">12</span><span style="color: #000000;">,
+                            </span><span style="color: #800000;">"</span><span style="color: #800000;">OrderNo</span><span style="color: #800000;">"</span>: <span style="color: #800000;">"</span><span style="color: #800000;">2019112235759329</span><span style="color: #800000;">"</span><span style="color: #000000;">,
+                            </span><span style="color: #800000;">"</span><span style="color: #800000;">Quantity</span><span style="color: #800000;">"</span>: <span style="color: #800080;">2</span><span style="color: #000000;">,
+                            </span><span style="color: #800000;">"</span><span style="color: #800000;">Amount</span><span style="color: #800000;">"</span>: <span style="color: #800080;">38.28</span><span style="color: #000000;">
+                        }
+                        
+                        ###
+                        
+                        GET {{baseUrl}}</span>/Order/<span style="color: #800080;">11</span><span style="color: #000000;">
+                        
+                        ###
+                        
+                        PATCH  {{baseUrl}}</span>/Order/<span style="color: #800080;">637109312996909246</span> HTTP/<span style="color: #800080;">1.1</span><span style="color: #000000;">
+                        Accept: application</span>/<span style="color: #000000;">json
+                        Content</span>-Type: application/<span style="color: #000000;">json
+                        
+                        [
+                          {
+                            </span><span style="color: #800000;">"</span><span style="color: #800000;">op</span><span style="color: #800000;">"</span>: <span style="color: #800000;">"</span><span style="color: #800000;">test</span><span style="color: #800000;">"</span><span style="color: #000000;">,
+                            </span><span style="color: #800000;">"</span><span style="color: #800000;">path</span><span style="color: #800000;">"</span>: <span style="color: #800000;">"</span><span style="color: #800000;">/quantity</span><span style="color: #800000;">"</span><span style="color: #000000;">,
+                            </span><span style="color: #800000;">"</span><span style="color: #800000;">value</span><span style="color: #800000;">"</span>: <span style="color: #800000;">"</span><span style="color: #800000;">2</span><span style="color: #800000;">"</span><span style="color: #000000;">
+                          },
+                          {
+                            </span><span style="color: #800000;">"</span><span style="color: #800000;">op</span><span style="color: #800000;">"</span>: <span style="color: #800000;">"</span><span style="color: #800000;">test</span><span style="color: #800000;">"</span><span style="color: #000000;">,
+                            </span><span style="color: #800000;">"</span><span style="color: #800000;">path</span><span style="color: #800000;">"</span>: <span style="color: #800000;">"</span><span style="color: #800000;">/amount</span><span style="color: #800000;">"</span><span style="color: #000000;">,
+                            </span><span style="color: #800000;">"</span><span style="color: #800000;">value</span><span style="color: #800000;">"</span>: <span style="color: #800000;">"</span><span style="color: #800000;">38.28</span><span style="color: #800000;">"</span><span style="color: #000000;">
+                          },
+                          {
+                            </span><span style="color: #800000;">"</span><span style="color: #800000;">op</span><span style="color: #800000;">"</span>: <span style="color: #800000;">"</span><span style="color: #800000;">add</span><span style="color: #800000;">"</span><span style="color: #000000;">,
+                            </span><span style="color: #800000;">"</span><span style="color: #800000;">path</span><span style="color: #800000;">"</span>: <span style="color: #800000;">"</span><span style="color: #800000;">/isComplete</span><span style="color: #800000;">"</span><span style="color: #000000;">,
+                            </span><span style="color: #800000;">"</span><span style="color: #800000;">value</span><span style="color: #800000;">"</span>: <span style="color: #800000;">"</span><span style="color: #800000;">true</span><span style="color: #800000;">"</span><span style="color: #000000;">
+                          },
+                        ]
+                        
+                        
+                        
+                        
+                        Sample request:
+                        
+                        PATCH  </span>/Order/<span style="color: #000000;">{orderNo} 
+                        
+                        [
+                          {
+                            </span><span style="color: #800000;">"</span><span style="color: #800000;">op</span><span style="color: #800000;">"</span>: <span style="color: #800000;">"</span><span style="color: #800000;">test</span><span style="color: #800000;">"</span><span style="color: #000000;">,
+                            </span><span style="color: #800000;">"</span><span style="color: #800000;">path</span><span style="color: #800000;">"</span>: <span style="color: #800000;">"</span><span style="color: #800000;">/quantity</span><span style="color: #800000;">"</span><span style="color: #000000;">,
+                            </span><span style="color: #800000;">"</span><span style="color: #800000;">value</span><span style="color: #800000;">"</span>: <span style="color: #800000;">"</span><span style="color: #800000;">2</span><span style="color: #800000;">"</span><span style="color: #000000;">
+                          },
+                          {
+                            </span><span style="color: #800000;">"</span><span style="color: #800000;">op</span><span style="color: #800000;">"</span>: <span style="color: #800000;">"</span><span style="color: #800000;">test</span><span style="color: #800000;">"</span><span style="color: #000000;">,
+                            </span><span style="color: #800000;">"</span><span style="color: #800000;">path</span><span style="color: #800000;">"</span>: <span style="color: #800000;">"</span><span style="color: #800000;">/amount</span><span style="color: #800000;">"</span><span style="color: #000000;">,
+                            </span><span style="color: #800000;">"</span><span style="color: #800000;">value</span><span style="color: #800000;">"</span>: <span style="color: #800000;">"</span><span style="color: #800000;">38.28</span><span style="color: #800000;">"</span><span style="color: #000000;">
+                          },
+                          {
+                            </span><span style="color: #800000;">"</span><span style="color: #800000;">op</span><span style="color: #800000;">"</span>: <span style="color: #800000;">"</span><span style="color: #800000;">add</span><span style="color: #800000;">"</span><span style="color: #000000;">,
+                            </span><span style="color: #800000;">"</span><span style="color: #800000;">path</span><span style="color: #800000;">"</span>: <span style="color: #800000;">"</span><span style="color: #800000;">/isComplete</span><span style="color: #800000;">"</span><span style="color: #000000;">,
+                            </span><span style="color: #800000;">"</span><span style="color: #800000;">value</span><span style="color: #800000;">"</span>: <span style="color: #800000;">"</span><span style="color: #800000;">true</span><span style="color: #800000;">"</span><span style="color: #000000;">
+                          },
+                        ]</span></pre>
+        </div>
+        <span class="cnblogs_code_collapse">View Code</span></div>
+        <p>&nbsp;</p>
+        <p>简单介绍一下，</p>
+        <p>文件后缀是http 或 rest</p>
+        <p>定义全局变量：@baseUrl =&nbsp;https://localhost:5001&nbsp; &nbsp;，注意链接不加引号</p>
+        <p>### 分割多个请求</p>
+        <p>POST/PUT 请求紧跟Head请求信息，换行加上请求内容</p>
+        <div>
+        <div>Ctrl + Alt + R 快捷键 / 点Send Request发起请求</div>
+        <div>&nbsp;</div>
+        </div>
+        </div>
+        <p id="format" class="ws-title">格式化输出</p>
+        <div class="ws-content">Api接口通常会是不同客户端调用，这样会有可能出现需要不同响应格式，例如常用的Json，XML。</div>
+        <div class="ws-content">ASPNET Core 默认情况下是忽略 Accept 标头，JSON格式返回</div>
+        <div class="ws-content">一、支持XML格式</div>
+        <div class="ws-content">1. 添加xml格式化</div>
+        <div class="ws-content">
+        <div class="cnblogs_code">
+        <pre><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">void</span><span style="color: #000000;"> ConfigureServices(IServiceCollection services)
+                        {
+                            services.AddControllers(options </span>=&gt;<span style="color: #000000;">
+                                    {
+                                        options.RespectBrowserAcceptHeader </span>= <span style="color: #0000ff;">true</span>;  <span style="color: #008000;">//</span><span style="color: #008000;">接受浏览器标头</span>
+                        <span style="color: #000000;">            })
+                                    .AddXmlSerializerFormatters();                  </span><span style="color: #008000;">//</span><span style="color: #008000;">添加XMl格式化</span>
+                        }</pre>
+        </div>
+        </div>
+        <div class="ws-content">
+        <p>&nbsp;2. 请求是添加标头</p>
+        <div class="cnblogs_code">
+        <pre>@orderId = {{order.response.body.*<span style="color: #000000;">}}
+                        GET {{baseUrl}}</span>/Order/{{orderId}} HTTP/<span style="color: #800080;">1.1</span><span style="color: #ff0000;">
+                        Accept: text/xml</span></pre>
+        </div>
+        <p>&nbsp;若不添加标头，默认使用JSON格式输出</p>
+        <p>&nbsp;</p>
+        <p>二、URL格式映射</p>
+        <p>1. 添加[FormatFilter]过滤器，它会检查路由中格式是否存在，并且使用相应的格式化程序输出</p>
+        <p>2. 路由规则添加{format?}</p>
+        <div class="cnblogs_code" onclick="cnblogs_code_show('b07c12ab-2dcb-4aee-8e46-d668b2ccb311')"><img id="code_img_closed_b07c12ab-2dcb-4aee-8e46-d668b2ccb311" class="code_img_closed" src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="" /><img id="code_img_opened_b07c12ab-2dcb-4aee-8e46-d668b2ccb311" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('b07c12ab-2dcb-4aee-8e46-d668b2ccb311',event)" src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif" alt="" />
+        <div id="cnblogs_code_open_b07c12ab-2dcb-4aee-8e46-d668b2ccb311" class="cnblogs_code_hide">
+        <pre>[HttpGet(<span style="color: #800000;">"</span><span style="color: #800000;">{id:int}.{format?}</span><span style="color: #800000;">"</span><span style="color: #000000;">)]
+                        </span><span style="color: #0000ff;">public</span> ActionResult&lt;Models.Order&gt; GetById(<span style="color: #0000ff;">int</span><span style="color: #000000;"> id)
+                        {
+                            </span><span style="color: #0000ff;">var</span> order = _orderStore.Orders.FirstOrDefault(m =&gt; m.Id ==<span style="color: #000000;"> id);
+                        
+                            </span><span style="color: #0000ff;">if</span> (order == <span style="color: #0000ff;">null</span><span style="color: #000000;">)
+                            {
+                                </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> NotFound();
+                            }
+                        
+                            </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> order;
+                        }</span></pre>
+        </div>
+        <span class="cnblogs_code_collapse">View Code</span></div>
+        <p>&nbsp;</p>
+        <table style="height: 78px; width: 100%;" border="0" align="left">
+        <tbody>
+        <tr><th>Url</th><th>响应</th></tr>
+        <tr>
+        <td>
+        <div>GET&nbsp;{{baseUrl}}/Order/{{orderId}}&nbsp;HTTP/1.1</div>
+        </td>
+        <td>JSON(若配置格式化输出）</td>
+        </tr>
+        <tr>
+        <td>
+        <div>GET&nbsp;{{baseUrl}}/Order/{{orderId}}.xml</div>
+        </td>
+        <td>XML(若配置格式化输出）</td>
+        </tr>
+        <tr>
+        <td>
+        <div>
+        <div>GET&nbsp;{{baseUrl}}/Order/{{orderId}}.json</div>
+        </div>
+        </td>
+        <td>JSON(若配置格式化输出）</td>
+        </tr>
+        </tbody>
+        </table>
+        <div style="clear: both;">&nbsp;</div>
+        <div style="clear: both;">三、添加基于 Newtonsoft.Json 的 JSON 格式支持</div>
+        <div style="clear: both;">&nbsp;</div>
+        <div style="clear: both;">在ASPNET Core 3.0开始，不再使用Newtonsoft.Json格式化JSON，而是使用System.Text.Json格式化，我们可以替换成Newtonsoft.Json</div>
+        <div style="clear: both;">&nbsp;</div>
+        <div style="clear: both;">1. 添加包</div>
+        <div style="clear: both;">
+        <div class="cnblogs_code">
+        <pre>dotnet add package Microsoft.AspNetCore.Mvc.NewtonsoftJson</pre>
+        </div>
+        <p>&nbsp;2. 配置Newtonsoft.Json</p>
+        <div class="cnblogs_code">
+        <pre><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">void</span><span style="color: #000000;"> ConfigureServices(IServiceCollection services)
+                        {
+                            services.AddControllers(options </span>=&gt;<span style="color: #000000;">
+                                    {
+                                        options.RespectBrowserAcceptHeader </span>= <span style="color: #0000ff;">true</span>;  <span style="color: #008000;">//</span><span style="color: #008000;">接受浏览器标头</span>
+                        <span style="color: #000000;">            })
+                                    .AddNewtonsoftJson(options </span>=&gt;                   <span style="color: #008000;">//</span><span style="color: #008000;">添加基于NewtonsoftJson格式化</span>
+                        <span style="color: #000000;">            {
+                                        options.SerializerSettings.DateFormatHandling </span>=<span style="color: #000000;"> Newtonsoft.Json.DateFormatHandling.MicrosoftDateFormat;
+                                        options.SerializerSettings.DateFormatString </span>= <span style="color: #800000;">"</span><span style="color: #800000;">yyyy-MM-dd HH:mm:ss</span><span style="color: #800000;">"</span><span style="color: #000000;">;
+                                        options.SerializerSettings.NullValueHandling </span>=<span style="color: #000000;"> Newtonsoft.Json.NullValueHandling.Ignore;
+                                    })
+                        }</span></pre>
+        </div>
+        </div>
+        <div style="clear: both;">&nbsp;</div>
+        </div>
+        <div id="patch" class="ws-title">JSON Patch请求</div>
+        <div class="ws-content">
+        <p>PUT 和 PATCH 方法用于更新现有资源。 它们之间的区别是，PUT 会替换整个资源，而PATCH 仅指定更改。</p>
+        <p>什么是JSON Patch?</p>
+        <p><a href="http://jsonpatch.com/" target="_blank">JSON Patch官网</a>&nbsp;里面有一句介绍的很清楚：JSON Patch is a format for describing changes to a JSON document. （一种描述Json的变化的格式）</p>
+        <p>什么时候需要用到JSON Patch</p>
+        <ol>
+        <li>我们返回的JSON很大，修改可能只是某些字段</li>
+        <li>对性能要求比较大的地方</li>
+        <li>一个大的对象，好几个地方修改，然后统一接口修改</li>
+        </ol>
+        <p>ASPNET Core如何处理JSON Patch 请求</p>
+        <p>1. 添加包支持</p>
+        <div class="cnblogs_code">
+        <pre>dotnet add package Microsoft.AspNetCore.JsonPatch</pre>
+        </div>
+        <p>2.&nbsp;使用 HttpPatch 属性进行批注</p>
+        <p>3. 接受 JsonPatchDocument&lt;T&gt;，通常带有 [FromBody]</p>
+        <p>4.&nbsp;调用 ApplyTo 以应用更改</p>
+        <p>假设我们现在有一个完成订单的需求</p>
+        <ol>
+        <li>检查金额，数量是否有变更</li>
+        <li>更新IsComplete = true</li>
+        </ol>
+        <p>下面附上代码和提交的JSON</p>
+        <p>控制器代码</p>
+        <div class="cnblogs_code" onclick="cnblogs_code_show('da15795c-fa48-482b-ac9f-41271e34aa56')"><img id="code_img_closed_da15795c-fa48-482b-ac9f-41271e34aa56" class="code_img_closed" src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="" /><img id="code_img_opened_da15795c-fa48-482b-ac9f-41271e34aa56" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('da15795c-fa48-482b-ac9f-41271e34aa56',event)" src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif" alt="" />
+        <div id="cnblogs_code_open_da15795c-fa48-482b-ac9f-41271e34aa56" class="cnblogs_code_hide">
+        <pre>[HttpPatch(<span style="color: #800000;">"</span><span style="color: #800000;">{orderNo:length(18)}</span><span style="color: #800000;">"</span><span style="color: #000000;">)]
+                        [ProducesResponseType(StatusCodes.Status200OK)]
+                        [ProducesResponseType(StatusCodes.Status404NotFound)]
+                        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+                        </span><span style="color: #0000ff;">public</span> ActionResult&lt;<span style="color: #0000ff;">bool</span>&gt; Update([FromBody] JsonPatchDocument&lt;Models.Order&gt; patchDoc, [FromRoute] <span style="color: #0000ff;">string</span><span style="color: #000000;"> orderNo)
+                        {
+                            </span><span style="color: #0000ff;">var</span> order = _orderStore.Orders.FirstOrDefault(m =&gt; m.OrderNo ==<span style="color: #000000;"> orderNo);
+                        
+                            </span><span style="color: #0000ff;">if</span> (order == <span style="color: #0000ff;">null</span><span style="color: #000000;">)
+                            {
+                                </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> NotFound();
+                            }
+                        
+                            patchDoc.ApplyTo(order, ModelState);
+                        
+                            </span><span style="color: #0000ff;">if</span> (!<span style="color: #000000;">ModelState.IsValid)
+                            {
+                                </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> BadRequest(ModelState);
+                            }
+                        
+                            </span><span style="color: #0000ff;">return</span> Ok(<span style="color: #0000ff;">true</span><span style="color: #000000;">);
+                        }</span></pre>
+        </div>
+        <span class="cnblogs_code_collapse">View Code</span></div>
+        <p>失败的JSON（金额校验不过）</p>
+        <div class="cnblogs_code" onclick="cnblogs_code_show('39de4a53-cf79-4b08-b73b-16721b25170d')"><img id="code_img_closed_39de4a53-cf79-4b08-b73b-16721b25170d" class="code_img_closed" src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="" /><img id="code_img_opened_39de4a53-cf79-4b08-b73b-16721b25170d" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('39de4a53-cf79-4b08-b73b-16721b25170d',event)" src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif" alt="" />
+        <div id="cnblogs_code_open_39de4a53-cf79-4b08-b73b-16721b25170d" class="cnblogs_code_hide">
+        <pre>PATCH  {{baseUrl}}/Order/<span style="color: #800080;">637109312996909246</span> HTTP/<span style="color: #800080;">1.1</span><span style="color: #000000;">
+                        Accept: application</span>/<span style="color: #000000;">json
+                        Content</span>-Type: application/<span style="color: #000000;">json
+                        
+                        [
+                          {
+                            </span><span style="color: #800000;">"</span><span style="color: #800000;">op</span><span style="color: #800000;">"</span>: <span style="color: #800000;">"</span><span style="color: #800000;">test</span><span style="color: #800000;">"</span><span style="color: #000000;">,
+                            </span><span style="color: #800000;">"</span><span style="color: #800000;">path</span><span style="color: #800000;">"</span>: <span style="color: #800000;">"</span><span style="color: #800000;">/quantity</span><span style="color: #800000;">"</span><span style="color: #000000;">,
+                            </span><span style="color: #800000;">"</span><span style="color: #800000;">value</span><span style="color: #800000;">"</span>: <span style="color: #800000;">"</span><span style="color: #800000;">2</span><span style="color: #800000;">"</span><span style="color: #000000;">
+                          },
+                          {
+                            </span><span style="color: #800000;">"</span><span style="color: #800000;">op</span><span style="color: #800000;">"</span>: <span style="color: #800000;">"</span><span style="color: #800000;">test</span><span style="color: #800000;">"</span><span style="color: #000000;">,
+                            </span><span style="color: #800000;">"</span><span style="color: #800000;">path</span><span style="color: #800000;">"</span>: <span style="color: #800000;">"</span><span style="color: #800000;">/amount</span><span style="color: #800000;">"</span><span style="color: #000000;">,
+                            </span><span style="color: #800000;">"</span><span style="color: #800000;">value</span><span style="color: #800000;">"</span>: <span style="color: #800000;">"</span><span style="color: #800000;">36.8</span><span style="color: #800000;">"</span><span style="color: #000000;">
+                          },
+                          {
+                            </span><span style="color: #800000;">"</span><span style="color: #800000;">op</span><span style="color: #800000;">"</span>: <span style="color: #800000;">"</span><span style="color: #800000;">add</span><span style="color: #800000;">"</span><span style="color: #000000;">,
+                            </span><span style="color: #800000;">"</span><span style="color: #800000;">path</span><span style="color: #800000;">"</span>: <span style="color: #800000;">"</span><span style="color: #800000;">/isComplete</span><span style="color: #800000;">"</span><span style="color: #000000;">,
+                            </span><span style="color: #800000;">"</span><span style="color: #800000;">value</span><span style="color: #800000;">"</span>: <span style="color: #800000;">"</span><span style="color: #800000;">true</span><span style="color: #800000;">"</span><span style="color: #000000;">
+                          },
+                        ]</span></pre>
+        </div>
+        <span class="cnblogs_code_collapse">View Code</span></div>
+        <p>&nbsp;</p>
+        <p>&nbsp;<img src="https://img2018.cnblogs.com/blog/413875/201912/413875-20191203010149199-1618636257.png" alt="" /></p>
+        <p>会在ModelState里面列出校验不过的信息</p>
+        <p>&nbsp;成功的JSON</p>
+        <div class="cnblogs_code" onclick="cnblogs_code_show('981518a6-4444-42cf-a712-6e10647584e9')"><img id="code_img_closed_981518a6-4444-42cf-a712-6e10647584e9" class="code_img_closed" src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="" /><img id="code_img_opened_981518a6-4444-42cf-a712-6e10647584e9" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('981518a6-4444-42cf-a712-6e10647584e9',event)" src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif" alt="" />
+        <div id="cnblogs_code_open_981518a6-4444-42cf-a712-6e10647584e9" class="cnblogs_code_hide">
+        <pre>PATCH  {{baseUrl}}/Order/<span style="color: #800080;">637109312996909246</span> HTTP/<span style="color: #800080;">1.1</span><span style="color: #000000;">
+                        Accept: application</span>/<span style="color: #000000;">json
+                        Content</span>-Type: application/<span style="color: #000000;">json
+                        
+                        [
+                          {
+                            </span><span style="color: #800000;">"</span><span style="color: #800000;">op</span><span style="color: #800000;">"</span>: <span style="color: #800000;">"</span><span style="color: #800000;">test</span><span style="color: #800000;">"</span><span style="color: #000000;">,
+                            </span><span style="color: #800000;">"</span><span style="color: #800000;">path</span><span style="color: #800000;">"</span>: <span style="color: #800000;">"</span><span style="color: #800000;">/quantity</span><span style="color: #800000;">"</span><span style="color: #000000;">,
+                            </span><span style="color: #800000;">"</span><span style="color: #800000;">value</span><span style="color: #800000;">"</span>: <span style="color: #800000;">"</span><span style="color: #800000;">2</span><span style="color: #800000;">"</span><span style="color: #000000;">
+                          },
+                          {
+                            </span><span style="color: #800000;">"</span><span style="color: #800000;">op</span><span style="color: #800000;">"</span>: <span style="color: #800000;">"</span><span style="color: #800000;">test</span><span style="color: #800000;">"</span><span style="color: #000000;">,
+                            </span><span style="color: #800000;">"</span><span style="color: #800000;">path</span><span style="color: #800000;">"</span>: <span style="color: #800000;">"</span><span style="color: #800000;">/amount</span><span style="color: #800000;">"</span><span style="color: #000000;">,
+                            </span><span style="color: #800000;">"</span><span style="color: #800000;">value</span><span style="color: #800000;">"</span>: <span style="color: #800000;">"</span><span style="color: #800000;">38.28</span><span style="color: #800000;">"</span><span style="color: #000000;">
+                          },
+                          {
+                            </span><span style="color: #800000;">"</span><span style="color: #800000;">op</span><span style="color: #800000;">"</span>: <span style="color: #800000;">"</span><span style="color: #800000;">add</span><span style="color: #800000;">"</span><span style="color: #000000;">,
+                            </span><span style="color: #800000;">"</span><span style="color: #800000;">path</span><span style="color: #800000;">"</span>: <span style="color: #800000;">"</span><span style="color: #800000;">/isComplete</span><span style="color: #800000;">"</span><span style="color: #000000;">,
+                            </span><span style="color: #800000;">"</span><span style="color: #800000;">value</span><span style="color: #800000;">"</span>: <span style="color: #800000;">"</span><span style="color: #800000;">true</span><span style="color: #800000;">"</span><span style="color: #000000;">
+                          },
+                        ]</span></pre>
+        </div>
+        <span class="cnblogs_code_collapse">View Code</span></div>
+        <p>&nbsp;</p>
+        <p>我们用Get请求重新查一下，可以看到IsComplete成功被修改了</p>
+        <p><img src="https://img2018.cnblogs.com/blog/413875/201912/413875-20191203010400002-408602128.png" alt="" /></p>
+        <p>这里只是简单介绍JSON Patch使用，更多使用方法参考<a href="http://jsonpatch.com/" target="_blank">JSON Pan官网</a> 和 <a href="https://docs.microsoft.com/zh-cn/aspnet/core/fundamentals/routing?view=aspnetcore-3.0#route-constraint-reference" target="_blank">微软文档</a></p>
+        <p>&nbsp;</p>
+        </div>
+        <div id="swagger" class="ws-title">Open API（Swagger）集成</div>
+        <div class="ws-content">
+        <p>Api 通常需要跟客户端，前端进行沟通，需要编写文档，这需要花费大量时间。</p>
+        <p>Open Api是专门解决这种问题，它为RESTful api定义了一个标准的、与语言无关的接口，利用工具生成文档，可以做到代码即文档(逼着开发者完善注释)</p>
+        <p>ASPNET Core 可以使用<a href="https://github.com/domaindrivendev/Swashbuckle.AspNetCore" target="_blank">Swashbuckle.AspNetCore</a>或<a href="https://github.com/RicoSuter/NSwag" target="_blank">NSwag</a> 生成Swagger 文档</p>
+        <p>下面介绍如何使用Swashbuckle.AspNetCore</p>
+        <p>一、使用Swashbuckle.AspNetCore</p>
+        <ol>
+        <li>
+        <h4>安装Swashbuckle.AspNetCore包</h4>
+        <div>
+        <div class="cnblogs_code">
+        <pre>dotnet add package Swashbuckle.AspNetCore</pre>
+        </div>
+        </div>
+        </li>
+        <li>
+        <h4>添加并配置 Swagger 中间件</h4>
+        <div>引用命名空间：using Microsoft.OpenApi.Models;
+        <div class="cnblogs_code">
+        <pre>services.AddSingleton&lt;Models.OrderStore&gt;<span style="color: #000000;">();
+                        
+                        services.AddSwaggerGen(c </span>=&gt;<span style="color: #000000;">
+                        {
+                            c.SwaggerDoc(</span><span style="color: #800000;">"</span><span style="color: #800000;">v1</span><span style="color: #800000;">"</span>, <span style="color: #0000ff;">new</span> OpenApiInfo { Title = <span style="color: #800000;">"</span><span style="color: #800000;">Web Api Doc</span><span style="color: #800000;">"</span>, Version = <span style="color: #800000;">"</span><span style="color: #800000;">v1</span><span style="color: #800000;">"</span><span style="color: #000000;"> });
+                        });</span></pre>
+        </div>
+        <div class="cnblogs_code">
+        <pre><span style="color: #000000;">app.UseSwagger();
+                                
+                                app.UseSwaggerUI(c </span>=&gt;<span style="color: #000000;">
+                                {
+                                    c.SwaggerEndpoint(</span><span style="color: #800000;">"</span><span style="color: #800000;">/swagger/v1/swagger.json</span><span style="color: #800000;">"</span>, <span style="color: #800000;">"</span><span style="color: #800000;">My API V1</span><span style="color: #800000;">"</span><span style="color: #000000;">);
+                                });</span></pre>
+        </div>
+        </div>
+        </li>
+        </ol>
+        <p>　　　　&nbsp;经过上面两步就可以使用SwaggerUI来查看文档和测试，浏览器打开（http://{url}/swagger）</p>
+        <p>二、添加XML注释</p>
+        <p>上面生成的Swagger文档是不包含XML注释，下面介绍如何添加XML注释</p>
+        <ol>
+        <li>
+        <h4>项目文件（*.csproj）添加以下</h4>
+        <div>
+        <div class="cnblogs_code">
+        <div>
+        <div>&lt;PropertyGroup&gt;</div>
+        <div>&nbsp;&nbsp;&nbsp;&nbsp;&lt;GenerateDocumentationFile&gt;true&lt;/GenerateDocumentationFile&gt;</div>
+        <div>&nbsp;&nbsp;&nbsp;&nbsp;&lt;NoWarn&gt;$(NoWarn);1591&lt;/NoWarn&gt;</div>
+        <div>&lt;/PropertyGroup&gt;</div>
+        </div>
+        </div>
+        <p>&nbsp;加上上面生成文档后，未注释的函数，属性会发出警告，警告代码1591，忽略警告可以添加多个，分号分割</p>
+        </div>
+        </li>
+        <li>
+                <h4>项目文件（*.csproj）添加以下</h4>
+                <div>
+                <div class="cnblogs_code">
+                <div>
+                <div>&lt;PropertyGroup&gt;</div>
+                <div>&nbsp;&nbsp;&nbsp;&nbsp;&lt;GenerateDocumentationFile&gt;true&lt;/GenerateDocumentationFile&gt;</div>
+                <div>&nbsp;&nbsp;&nbsp;&nbsp;&lt;NoWarn&gt;$(NoWarn);1591&lt;/NoWarn&gt;</div>
+                <div>&lt;/PropertyGroup&gt;</div>
+                </div>
+                </div>
+                <p>&nbsp;加上上面生成文档后，未注释的函数，属性会发出警告，警告代码1591，忽略警告可以添加多个，分号分割</p>
+                </div>
+                </li>
+        <li>
+        <h4>方法添加注释</h4>
+        <div>
+        <div class="cnblogs_code" onclick="cnblogs_code_show('5061379b-030e-4ce9-81b3-bd0e37e2350b')"><img id="code_img_closed_5061379b-030e-4ce9-81b3-bd0e37e2350b" class="code_img_closed" src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="" /><img id="code_img_opened_5061379b-030e-4ce9-81b3-bd0e37e2350b" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('5061379b-030e-4ce9-81b3-bd0e37e2350b',event)" src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif" alt="" />
+        <div id="cnblogs_code_open_5061379b-030e-4ce9-81b3-bd0e37e2350b" class="cnblogs_code_hide">
+        <pre>/// <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">summary</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">
+        /// 更新订单指定信息
+        /// </span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">summary</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">
+        /// </span><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">remarks</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">
+        /// Sample request:
+        /// 
+        ///     PATCH  /Order/{orderNo} 
+        ///     [
+        ///         {
+        ///             "op": "test",
+        ///             "path": "/quantity",
+        ///             "value": "2"
+        ///         },
+        ///         {
+        ///             "op": "test",
+        ///             "path": "/amount",
+        ///             "value": "38.28"
+        ///         },
+        ///         {
+        ///             "op": "add",
+        ///             "path": "/isComplete",
+        ///             "value": "true"
+        ///         },
+        ///     ]
+        /// </span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">remarks</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">
+        /// </span><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">returns</span><span style="color: #0000ff;">&gt;</span>返回是否成功<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">returns</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">
+        /// </span><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">response </span><span style="color: #ff0000;">code</span><span style="color: #0000ff;">="200"</span><span style="color: #0000ff;">&gt;</span>提交成功<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">response</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">
+        /// </span><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">response </span><span style="color: #ff0000;">code</span><span style="color: #0000ff;">="400"</span><span style="color: #0000ff;">&gt;</span>提交参数异常<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">response</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">    
+        /// </span><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">response </span><span style="color: #ff0000;">code</span><span style="color: #0000ff;">="404"</span><span style="color: #0000ff;">&gt;</span>订单号不存在<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">response</span><span style="color: #0000ff;">&gt;</span></pre>
+        </div>
+        <span class="cnblogs_code_collapse">View Code</span></div>
+        </div>
+        <div>
+        <p>ProducesResponseType 描述返回类型</p>
+        <p>remarks 会生成请求说明</p>
+        </div>
+        </li>
+        <li>
+        <h4>效果</h4>
+        <div style="display: inline-block;">
+        <div style="display: inline;"><img src="https://img2018.cnblogs.com/blog/413875/201912/413875-20191205005705255-363356228.png" alt="" /></div>
+        <div style="display: inline; margin-left: 4px;"><img src="https://img2018.cnblogs.com/blog/413875/201912/413875-20191205010519876-1405571616.png" alt="" /></div>
+        </div>
+        </li>
+        </ol>
+        <p>Web Api 使用就介绍这些，如有错漏，希望指出。</p>
+        </div>
+        <div class="ws-copyright">
+        <p>转发请标明出处：https://www.cnblogs.com/WilsonPan/p/11945856.html</p>
+        <p>示例代码：https://github.com/WilsonPan/AspNetCoreExamples/tree/master/EFCore</p>
+        </div>
