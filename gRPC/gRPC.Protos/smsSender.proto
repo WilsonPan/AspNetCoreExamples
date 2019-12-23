@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+option csharp_namespace = "gRPC.Services";
+
+package sms;
+
+// The greeting service definition.
+service SmsSender {
+  // Sends a greeting
+  rpc SendSms (SmsRequest) returns (SmsResponse);
+}
+
+// The request message containing the user's name.
+message SmsRequest {
+  string tel = 1;
+  string content = 2;
+}
+
+// The response message containing the greetings.
+message SmsResponse {
+  int32 code = 1;
+  string message = 2;
+}
