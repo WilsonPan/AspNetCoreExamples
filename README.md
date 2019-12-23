@@ -23,4 +23,9 @@ Razor页面
 
 在终端执行dotnet run / dotnet watch run
 
-SwaggerUI: https://localhost:5001/swagger/index.html
+SwaggerUI: https://localhost:5001/swagger/index.
+
+## gRPC
+
+终端定位gRPC.Services执行：dotnet run
+终端定位gRPC.Client 执行：dotnet run
