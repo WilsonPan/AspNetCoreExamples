@@ -1,4 +1,12 @@
-使用VSCode + NET Core3.0在ASP.NET Core中使用Web API创建 RESTful 服务，包括创建简单Rest API、格式化输出、JSON Patch请求、Open API（Swagger）集成
+
+环境: 
+- VSCode + NET Core3
+
+内容：
+1. Rest API
+2. 格式化输出
+3. JSON Patch
+4. Swagger集成
 
 dotnet-cli
 ```
