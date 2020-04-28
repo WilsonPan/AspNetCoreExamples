@@ -29,3 +29,6 @@ SwaggerUI: https://localhost:5001/swagger/index.
 
 终端定位gRPC.Services执行：dotnet run
 终端定位gRPC.Client 执行：dotnet run
+
+## LoggingPattern
+[概述](https://github.com/WilsonPan/AspNetCoreExamples/blob/master/LoggingPattern/Overview.md)
