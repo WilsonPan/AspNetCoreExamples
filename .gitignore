@@ -29,3 +29,4 @@ _ReSharper*/
 .vs
 packages/
 .vscode*/
+log-files*/
