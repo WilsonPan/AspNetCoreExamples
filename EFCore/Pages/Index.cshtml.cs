@@ -26,8 +26,7 @@ namespace EFCore.Pages
             var student = _context.Student.Single(m => m.Id == 1);
             student.Age = 32;
 
-            #region 模拟另外一个用户修改了Age
-
+            //模拟另外一个用户修改了Age
             var task = Task.Run(() =>
             {
                 var options = HttpContext.RequestServices.GetService<DbContextOptions<Data.EFCoreDbContext>>();
@@ -39,40 +38,51 @@ namespace EFCore.Pages
                 }
             });
             task.Wait();
+            //到这，另外一个线程已经将Age修改成23
 
-            #endregion
+            var trySave = 0;
 
-            var (trySave, isSave) = (0, false);
+            //若并发冲突异常，重试3次
+            while (trySave++ < 3)
+            {
+                if (TrySaveData()) break;
+            }
 
-            while (!isSave && trySave++ < 3)
+            bool TrySaveData()
             {
                 try
                 {
                     _context.SaveChanges();
+                    return true;
                 }
                 catch (DbUpdateConcurrencyException ex)
                 {
-                    _logger.LogError(ex, "database update error");
+                    _logger.LogError(ex, $"database update concurrency exception : retry: {trySave}");
 
-                    foreach (var entry in ex.Entries)
-                    {
-                        if (entry.Entity is Models.Student)
-                        {
-                            var currentValues = entry.CurrentValues;
-                            var databaseValues = entry.GetDatabaseValues();
+                    //3次尝试保存失败，抛出异常等上层处理，不应该吃掉异常，不然返回成功，实际保存没成功
+                    if (trySave >= 3) throw ex;
 
-                            foreach (var property in currentValues.Properties)
-                            {
-                                var currentValue = currentValues[property];
-                                var databaseValue = databaseValues[property];
+                    //若冲突不是当前处理的对象，抛出异常等上层处理
+                    if (!ex.Entries.Any(m => m.Entity is Models.Student)) throw ex;
 
-                                //这里选择保存哪个值，这里简单选择当前（30）保存到数据库，实际可能还需处理，如余额，就需要数据库当前余额 - 当前数值
-                                currentValues[property] = currentValue;
-                            }
-                            // 刷新原始值
-                            entry.OriginalValues.SetValues(databaseValues);
-                        }
-                    }
+                    var entry = ex.Entries.Select(m => m).Single(m => m.Entity is Models.Student);
+                    //获取当前实体值
+                    var currentValues = entry.CurrentValues;
+                    //获取数据库值
+                    var databaseValues = entry.GetDatabaseValues();
+
+                    //这里获取当前需要修改的字段
+                    var property = currentValues.Properties.FirstOrDefault(m => m.Name == nameof(student.Age));
+                    var currentValue = currentValues[property];
+                    var databaseValue = databaseValues[property];
+
+                    //这里赋值多个选择方案，1. 使用当前值 2. 使用数据库值 3. 处理后的值（例如余额，数据库余额 - 当前余额 & 大于0)
+                    currentValues[property] = currentValue;
+
+                    // 刷新原始值，这里原始值是做并发检查
+                    entry.OriginalValues.SetValues(databaseValues);
+
+                    return false;
                 }
             }
         }
