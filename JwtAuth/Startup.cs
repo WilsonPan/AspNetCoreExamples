@@ -29,43 +29,23 @@ namespace JwtAuth
         {
             services.AddControllers();
 
-            var key = System.Text.Encoding.ASCII.GetBytes("1G3l0yYGbOINId3A*ioEi4iyxR7$SPzm");
+            services.AddOptions();
+            services.Configure<JwtSettings>(Configuration.GetSection(nameof(JwtSettings)));
+
+            var jwtSettings = new JwtSettings(); ;
+            Configuration.GetSection(nameof(JwtSettings)).Bind(jwtSettings);
+
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                     .AddJwtBearer(options =>
                     {
-                        options.RequireHttpsMetadata = false;
-                        options.SaveToken = true;
                         options.TokenValidationParameters = new TokenValidationParameters()
                         {
-                            ValidIssuer = "https://localhost:5001",
-                            ValidAudience = "WilsonPan",
+                            ValidIssuer = jwtSettings.Issuer,
+                            ValidAudience = "Wilson",
                             ValidateIssuer = true,
                             ValidateLifetime = true,
                             ValidateIssuerSigningKey = true,
-                            IssuerSigningKey = new SymmetricSecurityKey(key)
-                        };
-                        options.Events = new JwtBearerEvents
-                        {
-                            OnAuthenticationFailed = context =>
-                            {
-                                Console.WriteLine("Eception :" + context.Exception?.Message);
-                                return Task.CompletedTask;
-                            },
-                            OnMessageReceived = context =>
-                            {
-                                Console.WriteLine("Token : " + context.Token);
-                                return Task.CompletedTask;
-                            },
-                            OnForbidden = context =>
-                            {
-                                Console.WriteLine("Forbidden : " + context.Result?.Failure?.Message);
-                                return Task.CompletedTask;
-                            },
-                            OnTokenValidated = context =>
-                            {
-                                Console.WriteLine("OnTokenValidated" + context.SecurityToken.SigningKey.KeyId);
-                                return Task.CompletedTask;
-                            }
+                            IssuerSigningKey = jwtSettings.SymmetricSecurityKey
                         };
                     });
 
@@ -82,7 +62,7 @@ namespace JwtAuth
             app.UseHttpsRedirection();
 
             app.UseRouting();
-            
+
             app.UseAuthentication();
             app.UseAuthorization();
 

@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 namespace JwtAuth.Controllers
@@ -11,29 +12,33 @@ namespace JwtAuth.Controllers
     [Route("[controller]")]
     public class AuthorizeController : ControllerBase
     {
-        private ILogger<AuthorizeController> _logger;
-        public AuthorizeController(ILogger<AuthorizeController> logger)
+        private readonly ILogger<AuthorizeController> _logger;
+        private readonly JwtSettings _jwtSettings;
+        public AuthorizeController(ILogger<AuthorizeController> logger, IOptions<JwtSettings> jwtSettings)
         {
             _logger = logger;
+            _jwtSettings = jwtSettings?.Value;
         }
 
         [HttpPost]
         public IActionResult Auth([FromForm] string username, [FromForm] string password)
         {
-            if (username != "WilsonPan" || password != "123456") return BadRequest("username or password invalide");
+            if (!username.StartsWith("Wilson") || password != "123456") return BadRequest("username or password invalide");
 
             var claims = new Claim[]
             {
-                new Claim(JwtRegisteredClaimNames.UniqueName,"WilsonPan"),
+                new Claim(JwtRegisteredClaimNames.Sub,"WilsonPan"),
                 new Claim(JwtRegisteredClaimNames.Email,"wilsonpan@github.com"),
+                new Claim(JwtRegisteredClaimNames.Nonce,System.Guid.NewGuid().ToString()),
+                new Claim(JwtRegisteredClaimNames.NameId,"Wilson Id"),
+                new Claim(JwtRegisteredClaimNames.UniqueName,"Wilson Pan"),
             };
-            var key = Encoding.ASCII.GetBytes("1G3l0yYGbOINId3A*ioEi4iyxR7$SPzm");
             JwtSecurityToken token = new JwtSecurityToken(
-                issuer: "https://localhost:5001",
+                issuer: _jwtSettings.Issuer,
                 audience: username,
                 claims: claims,
                 expires: System.DateTime.Now.AddMinutes(5),
-                signingCredentials: new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256)
+                signingCredentials: _jwtSettings.SigningCredentials
                 );
             return Ok(new JwtSecurityTokenHandler().WriteToken(token));
         }
