@@ -1,6 +1,6 @@
 # AspNetCoreExamples
 
-[AspNetCore 入门](./AspNetCoreExamples/blob/master/Base/Overview.md)
+[AspNetCore 入门](/Base/Overview.md)
 
 
 [AspNetCore Razor](https://github.com/WilsonPan/AspNetCoreExamples/blob/master/Razor/Overview.md)
