@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -37,6 +39,18 @@ namespace JwtAuth.Controllers
                 Summary = Summaries[rng.Next(Summaries.Length)]
             })
             .ToArray();
+        }
+        [Authorize]
+        [Route("Info")]
+        [HttpGet]
+        public dynamic GetAuthInfo()
+        {
+            return Ok(new
+            {
+                User.Identity.IsAuthenticated,
+                User.Identity.Name,
+                Email = User.Claims.FirstOrDefault(m => m.Type == ClaimTypes.Email)?.Value
+            });
         }
     }
 }
