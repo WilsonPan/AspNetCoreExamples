@@ -25,7 +25,7 @@ namespace JwtAuth.Controllers
         }
 
 
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public IEnumerable<WeatherForecast> Get()
         {
