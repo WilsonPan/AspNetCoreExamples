@@ -1,5 +1,4 @@
 @host = https://localhost:5001
-@authToken = {{token.response.body.*}}
 
 # @name token
 POST {{host}}/Authorize  HTTP/1.1
@@ -9,11 +8,11 @@ username=Wilson&password=123456
 
 ###
 GET  {{host}}/WeatherForecast HTTP/1.1
-Authorization: Bearer {{authToken}}
+Authorization: Bearer {{token.response.body.*}}
 
 ###
 
 GET {{host}}/WeatherForecast/Info HTTP/1.1
-Authorization: Bearer {{authToken}}
+Authorization: Bearer {{token.response.body.*}}
 
 

@@ -41,7 +41,7 @@ namespace JwtAuth
                         options.TokenValidationParameters = new TokenValidationParameters()
                         {
                             ValidIssuer = jwtSettings.Issuer,
-                            ValidAudience = "Wilson",
+                            ValidAudience = jwtSettings.Audience,
                             ValidateIssuer = true,
                             ValidateLifetime = true,
                             ValidateIssuerSigningKey = true,

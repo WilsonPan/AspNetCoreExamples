@@ -18,3 +18,6 @@
 
 [LoggingPattern](/LoggingPattern/)
 > AspNetCore日志模式 - 提供者模式, 提供者模式应用场景介绍
+
+[Jwt认证](/jwtAuth/)
+> AspnetCore集成Jwt认证
