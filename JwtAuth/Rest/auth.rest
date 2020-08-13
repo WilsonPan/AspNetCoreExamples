@@ -11,10 +11,10 @@ username=WilsonPan&password=123456
 
 ### required authorize
 GET  {{host}}/api HTTP/1.1
-Authorization: Bearer {{token}}
+Authorization: Bearer {{token.response.body.*}}
 
 ### required admin role
 POST {{host}}/api HTTP/1.1
-Authorization: Bearer {{token}}
+Authorization: Bearer {{token.response.body.*}}
 
 
