@@ -30,25 +30,18 @@ namespace JwtAuth
             services.AddControllers();
 
             services.AddOptions();
-            services.Configure<JwtSettings>(Configuration.GetSection(nameof(JwtSettings)));
+            services.Configure<JwtOptions>(Configuration.GetSection(nameof(JwtOptions)));
 
-            var jwtSettings = new JwtSettings(); ;
-            Configuration.GetSection(nameof(JwtSettings)).Bind(jwtSettings);
+            //use default options
+            services.AddJwtBearer(Configuration.GetValue<string>("JwtOptions:SecurityKey"));
 
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                    .AddJwtBearer(options =>
-                    {
-                        options.TokenValidationParameters = new TokenValidationParameters()
-                        {
-                            ValidIssuer = jwtSettings.Issuer,
-                            ValidAudience = jwtSettings.Audience,
-                            ValidateIssuer = true,
-                            ValidateLifetime = true,
-                            ValidateIssuerSigningKey = true,
-                            IssuerSigningKey = jwtSettings.SymmetricSecurityKey
-                        };
-                    });
-
+            //use custom options
+            // services.AddJwtBearer(options =>
+            // {
+            //     options.Issuer = Configuration.GetValue<string>("JwtOptions:Issuer");
+            //     options.Audience = Configuration.GetValue<string>("JwtOptions:Audience");
+            //     options.SecurityKey = Configuration.GetValue<string>("JwtOptions:SecurityKey");
+            // });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

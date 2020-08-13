@@ -4,15 +4,17 @@
 POST {{host}}/Authorize  HTTP/1.1
 Content-Type: application/x-www-form-urlencoded
 
-username=Wilson&password=123456
+#username=Wilson&password=123456
+# admin 
+username=WilsonPan&password=123456
 
-###
-GET  {{host}}/WeatherForecast HTTP/1.1
-Authorization: Bearer {{token.response.body.*}}
 
-###
+### required authorize
+GET  {{host}}/api HTTP/1.1
+Authorization: Bearer {{token}}
 
-GET {{host}}/WeatherForecast/Info HTTP/1.1
-Authorization: Bearer {{token.response.body.*}}
+### required admin role
+POST {{host}}/api HTTP/1.1
+Authorization: Bearer {{token}}
 
 
