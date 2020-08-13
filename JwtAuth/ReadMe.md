@@ -62,7 +62,43 @@ dotnet add package Microsoft.AspNetCore.Authentication.JwtBearer
 ```
 
 3. Jwt Bearer 扩展（选项）
+```cs
+public static AuthenticationBuilder AddJwtBearer(this IServiceCollection services, Action<JwtOptions> configureOptions)
+{
+    if (configureOptions == null) throw new ArgumentNullException(nameof(configureOptions));
 
+    var jwtOptions = new JwtOptions()
+    {
+        Issuer = "Jwt Authentication",
+        Audience = "Wilson Pan Web Api",
+    };
+    // set customs optoins
+    configureOptions(jwtOptions);
+
+    // update Options 
+    services.PostConfigure<JwtOptions>(options =>
+    {
+        options.Issuer = jwtOptions.Issuer;
+        options.Audience = jwtOptions.Audience;
+        options.SecurityKey = jwtOptions.SecurityKey;
+    });
+
+    return services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                    .AddJwtBearer(options =>
+                    {
+                        options.TokenValidationParameters = new TokenValidationParameters()
+                        {
+                            ValidIssuer = jwtOptions.Issuer,
+                            ValidAudience = jwtOptions.Audience,
+                            ValidateIssuer = true,
+                            ValidateLifetime = true,
+                            ValidateIssuerSigningKey = true,
+                            IssuerSigningKey = jwtOptions.SymmetricSecurityKey
+                        };
+                    });
+
+}
+```
 
 4. ConfigureServices
 
