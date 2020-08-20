@@ -159,4 +159,38 @@ public IActionResult Post()
 }
 ```
 
+# Rest Client
 
+
+```
+dotnet run
+```
+
+1. 认证接口
+```s
+@host = https://localhost:5001
+
+# @name token
+POST {{host}}/Authorize  HTTP/1.1
+Content-Type: application/x-www-form-urlencoded
+
+#username=Wilson&password=123456
+# admin 
+username=WilsonPan&password=123456
+```
+
+2. 需要授权接口
+```s
+### required authorize
+GET  {{host}}/api HTTP/1.1
+Authorization: Bearer {{token.response.body.*}}
+
+```
+
+3. 需要管理员角色接口
+```s
+### required authorize
+POST {{host}}/api HTTP/1.1
+Authorization: Bearer {{token.response.body.*}}
+
+```
