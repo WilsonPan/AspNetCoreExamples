@@ -21,3 +21,6 @@
 
 [Jwt认证](/JwtAuth/)
 > AspnetCore集成Jwt认证
+
+[常用脚手架](/CLI/)
+> Dotnet 常用脚手架
