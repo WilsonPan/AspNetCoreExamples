@@ -42,3 +42,70 @@ dotnet clean --configuration Release        # 清除使用版本配置生成的�
 ## dotnet format
 > 格式化代码
 
+```sh
+dotnet format ./solution.sln                                        # 格式化解决方案所有代码文件
+dotnet format ./application.csproj                                  # 格式化项目所有代码文件
+dotnet format --verify-no-changes                                   # 验证但不改变，会列出需要格式化文件
+dotnet format --include ./src/                                      # 格式化指定目录代码文件
+dotnet format --include ./src/ --exclude ./src/submodule-a/         # 格式化src/文件夹下文件但排除submodule-a/文件夹
+```
+
+## dotnet restore
+> 恢复项目的依赖项和工具。
+
+```sh
+dotnet restore                                  # 还原当前目录中项目的依赖项
+dotnet restore ./project.csproj                 # 还原指定项目的依赖项
+dotnet restore -s /.nuget                       # 使用指定源还原依赖性
+```
+
+## dotnet run
+> 运行项目
+
+```sh
+dotnet run                                      # 运行当前目录项目
+dotnet run --project ./projects.csproj          # 运行指定项目
+dotnet run --property:Configuration=Release     # 运行Release模式
+```
+
+## dotnet test
+> 执行单元测试
+
+```sh
+dotnet test                                     # 运行当前目录所含项目中的测试
+dotnet test ~/projects.csproj                   # 运行指定项目单元测试
+dotnet test --logger trx                        # 运行单元测试并生成trx格式测试结果
+```
+
+## dotnet watch
+> 检测到源代码中的更改时重启或热重载指定的应用程序
+
+```sh
+dotnet watch run                                # 热启动项目
+dotnet watch run --project ./project.csproj     # 热启动指定项目
+```
+
+## dotnet tool
+> .Net工具管理
+
+```sh
+dotnet tool list --global                       # 列出全局安装工具
+dotnet tool list --local                        # 列出当前目录安装工具
+dotnet tool search <name>                       # 搜索工具
+dotnet tool install                             # 当前目录安装工具
+dotnet tool install -g <name>                   # 全局安装工具
+dotnet tool install -g <name> --version 2.0.0   # 安装指定版本工具
+dotnet tool update <name>                       # 更新指定工具
+```
+
+> Net常用工具
+
+| package id      | 描述                        |
+| --------------- | --------------------------- |
+| dotnet-format   | 代码格式工具                |
+| dotnet-ef       | Entity Framework Core tools |
+| dotnet-dump     | 捕获dump文件于分析          |
+| dotnet-trace    | 性能分析工具                |
+| dotnet-counters | 性能监控工具                |
+| dotnet-gcdump   | 堆分析工具                  |
+| dotnet-monitor  | 诊断监控和收集实用程序      |
